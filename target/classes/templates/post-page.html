@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
   <meta charset="UTF-8">
   <title>Post Details</title>
@@ -25,18 +25,57 @@
   </tr>
   <tr>
     <th>Created Date:</th>
-    <td th:text="${#temporals.format(post.createdDate, 'yyyy-MM-dd h:mma')}"></td>
+    <td th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd h:mma')}"></td>
   </tr>
   <tr>
     <th>Subreddit:</th>
     <td th:text="${post.subreddit.name}"></td>
   </tr>
+<div sec:authorize="isAuthenticated()">
+  <form  action="#" th:action="@{'/addComment/'+${post.postId}}" method="post">
+    <div>
+      <label for="name">Name</label>
+      <input id="name" type="text" name="name" required>
+    </div>
+    <div>
+      <label for="email">Email</label>
+      <input id="email" name="email" type="text" required>
+    </div>
+    <div>
+      <label for="comment">Comment</label>
+      <textarea id="comment" name="commentText" required></textarea>
+    </div>
+    <button type="submit">Submit Comment</button>
+  </form>
+
+  <ol>
+
+    <li th:each="comment : ${post.comments}" th:if="${comment.parentComment == null}">
+      <strong th:text="${comment.name}"></strong> &nbsp; &nbsp;
+      <span th:text="'Created At ' + ${#temporals.format(comment.createdAt, 'dd/MM/yyyy, hh:mm a')}"></span>
+      <span th:text="${comment.updatedAt != null ? 'Updated at ' + #temporals.format(comment.updatedAt, 'dd/MM/yyyy, hh:mm a') : ''}"></span>
+      <div th:text="${comment.text}"></div> &nbsp; &nbsp;
+      <span><a th:href="@{'/editComment/' + ${comment.id}}">edit</a></span>
+      <span><a th:href="@{'/deleteComment/' + ${comment.id}}">Delete</a></span>
+      <div th:if="${comment.replies.size() > 0}">
+        <a th:href="@{'/viewReplies/' + ${comment.id}}">Replies (<span th:text="${comment.replies.size()}"></span>)</a>
+      </div>
+      <div th:unless="${comment.replies.size() > 0}">
+        Replies: <span th:text="${comment.replies.size()}"></span>
+      </div>
+      <div>
+        <span><a th:href="@{'/replyOnComment/' + ${comment.id} + '?postId=' + ${post.postId}}">Reply</a></span>
+      </div>
+    </li>
+  </ol>
+
   <form th:action="@{'/update-post/' + ${post.postId}}" method="POST">
     <input type="submit" value="Edit">
   </form>
   <form th:action="@{'/delete-post/' + ${post.postId}}" method="POST">
     <input type="submit" value="Delete">
   </form>
+</div>
 </table>
 </body>
 </html>

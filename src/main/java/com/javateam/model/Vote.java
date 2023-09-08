@@ -19,8 +19,6 @@ public class Vote {
     @GeneratedValue(strategy = IDENTITY)
     private Integer voteId;
 
-
-
     public VoteType getVoteType() {
         return voteType;
     }

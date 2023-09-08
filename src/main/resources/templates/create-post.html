@@ -26,7 +26,7 @@
 
     <input type="hidden" name="postId" th:if="${post.postId != null}" th:value="${post.postId}">
     <input type="hidden" name="subreddit" th:if="${post.postId != null}" th:value="${post.subreddit.id}">
-    <input type="hidden" name="createdDate" th:if="${post.postId != null}" th:value="${post.createdDate}">
+    <input type="hidden" name="createdAt" th:if="${post.postId != null}" th:value="${post.createdAt}">
     <input type="submit" th:value="${post.postId != null ? 'Update Post' : 'Create Post'}">
 </form>
 

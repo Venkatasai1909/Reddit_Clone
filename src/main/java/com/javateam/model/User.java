@@ -64,14 +64,5 @@ public class User {
     private Instant created;
     private boolean enabled;
 
-//    public boolean isVote() {
-//        return vote;
-//    }
-//
-//    public void setVote(boolean vote) {
-//        this.vote = vote;
-//    }
-//
-//    private boolean vote;
 
 }

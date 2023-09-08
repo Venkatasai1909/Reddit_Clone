@@ -23,7 +23,7 @@ public class PostService {
     }
 
     public List<Post> findAll(){
-        return postRepository.findAll();
+        return postRepository.findAllByOrderByVoteCountDesc();
     }
 
     public void save(Post post){
@@ -53,12 +53,6 @@ public class PostService {
     }
     public void updateVote(Vote vote) {
         voteRepository.save(vote);
-    }
-    public boolean hasUserVoted(User user, Post post) {
-        // Implement logic to check if the user has voted on the post
-        // You can do this by querying your database, for example:
-        Vote existingVote = voteRepository.findByUserAndPost(user, post);
-        return existingVote != null;
     }
 
 

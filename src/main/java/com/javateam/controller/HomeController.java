@@ -24,9 +24,6 @@ public class HomeController {
     @GetMapping("/posts")
     public String getAllPosts(Model model) {
         List<Post> posts = postService.findAll();
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
-
 
         model.addAttribute("posts", posts);
 
@@ -49,7 +46,9 @@ public class HomeController {
     @PostMapping("/save-post")
     public String savePost(@ModelAttribute("post") Post post) {
         if(post.getPostId() == null) {
-            post.setCreatedDate(Instant.now());
+            post.setCreatedAt(Instant.now());
+        } else {
+            post.setUpdatedAt(Instant.now());
         }
 
         postService.save(post);
@@ -112,29 +111,24 @@ public class HomeController {
         Vote existingVote = postService.findVoteByUserAndPost(user, post);
 
         if (existingVote != null) {
-            // User has already voted, check if it's the same vote type
             if (existingVote.getVoteType() != voteType) {
-                // Change the vote type
                 existingVote.setVoteType(voteType);
                 postService.updateVote(existingVote);
 
-                // Update the vote count based on the new vote type
                 Integer voteCount = post.getVoteCount();
                 if (voteType == VoteType.UPVOTE) {
-                    post.setVoteCount(voteCount + 1); // +2 because user changes from downvote to upvote
+                    post.setVoteCount(voteCount + 1);
                 } else {
-                    post.setVoteCount(voteCount - 1); // -2 because user changes from upvote to downvote
+                    post.setVoteCount(voteCount - 1);
                 }
             }
         } else {
-            // User has not voted for this post, create a new vote record
             Vote vote = new Vote();
             vote.setPost(post);
             vote.setUser(user);
             vote.setVoteType(voteType);
             postService.createVote(vote);
 
-            // Update the vote count based on the new vote type
             Integer voteCount = post.getVoteCount();
             if (voteType == VoteType.UPVOTE) {
                 post.setVoteCount(voteCount + 1);
@@ -145,7 +139,6 @@ public class HomeController {
 
         model.addAttribute("voteType", voteType);
 
-        // Save the updated post
         postService.save(post);
 
         return "redirect:/posts";
@@ -159,29 +152,24 @@ public class HomeController {
         Vote existingVote = postService.findVoteByUserAndPost(user, post);
 
         if (existingVote != null) {
-            // User has already voted, check if it's the same vote type
             if (existingVote.getVoteType() != voteType) {
-                // Change the vote type
                 existingVote.setVoteType(voteType);
                 postService.updateVote(existingVote);
 
-                // Update the vote count based on the new vote type
                 Integer voteCount = post.getVoteCount();
                 if (voteType == VoteType.UPVOTE) {
-                    post.setVoteCount(voteCount + 1); // +2 because user changes from downvote to upvote
+                    post.setVoteCount(voteCount + 1);
                 } else {
-                    post.setVoteCount(voteCount - 1); // -2 because user changes from upvote to downvote
+                    post.setVoteCount(voteCount - 1);
                 }
             }
         } else {
-            // User has not voted for this post, create a new vote record
             Vote vote = new Vote();
             vote.setPost(post);
             vote.setUser(user);
             vote.setVoteType(voteType);
             postService.createVote(vote);
 
-            // Update the vote count based on the new vote type
             Integer voteCount = post.getVoteCount();
             if (voteType == VoteType.UPVOTE) {
                 post.setVoteCount(voteCount + 1);
@@ -192,7 +180,6 @@ public class HomeController {
 
         model.addAttribute("voteType", voteType);
 
-        // Save the updated post
         postService.save(post);
 
         return "redirect:/posts";

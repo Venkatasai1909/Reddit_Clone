@@ -6,9 +6,15 @@
 </head>
 <body>
 <h1>List of Posts</h1>
-<a th:href="@{/create-post}">Create Post</a>
-<a th:href="@{/create-community}">Create Community</a>
-<a th:href="@{/register}">Create User</a>
+<div sec:authorize="isAuthenticated()">
+    <a th:href="@{/create-post}">Create Post</a>
+</div>
+<div sec:authorize="isAuthenticated()">
+    <a th:href="@{/create-community}">Create Community</a>
+</div>
+<div sec:authorize="!isAuthenticated()">
+    <a th:href="@{/register}">Create User</a>
+</div>
 <div sec:authorize="!isAuthenticated()">
     <form th:action="@{/login}">
         <input type="submit" value="Login">
@@ -39,7 +45,7 @@
         <td th:text="${post.url}"></td>
         <td th:text="${post.description}"></td>
         <td th:text="${post.voteCount}"></td>
-        <td th:text="${#temporals.format(post.createdDate, 'yyyy-MM-dd h:mma')}"></td>
+        <td th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd h:mma')}"></td>
         <td th:text="${post.subreddit != null} ? ${post.subreddit.name} : ''"></td>
 
         <td>
@@ -48,17 +54,14 @@
                     <input type="hidden" name="email" th:value="${#authentication.principal.username}">
                     <input type="submit" value="Upvote">
                 </form>
+        </td>
+        <td>
                 <form th:if="${voteType == null || voteType == 'UPVOTE'}" th:action="@{/posts/downvote/{postId}/DOWNVOTE(postId=${post.postId})}" method="Get">
                     <input type="hidden" name="email" th:value="${#authentication.principal.username}">
                     <input type="submit" value="Downvote">
                 </form>
             </div>
         </td>
-
-
-        <div sec:authorize="isAnonymous()">
-            <p>Please log in to upvote or downvote.</p>
-        </div>
 
     </tr>
 
