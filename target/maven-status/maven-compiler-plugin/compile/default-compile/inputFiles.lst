@@ -1,0 +1,13 @@
+/home/venkatasai/reddit-clone/src/main/java/com/javateam/model/Vote.java
+/home/venkatasai/reddit-clone/src/main/java/com/javateam/controller/HomeController.java
+/home/venkatasai/reddit-clone/src/main/java/com/javateam/repository/VoteRepository.java
+/home/venkatasai/reddit-clone/src/main/java/com/javateam/service/PostService.java
+/home/venkatasai/reddit-clone/src/main/java/com/javateam/repository/UserRepository.java
+/home/venkatasai/reddit-clone/src/main/java/com/javateam/model/Post.java
+/home/venkatasai/reddit-clone/src/main/java/com/javateam/model/User.java
+/home/venkatasai/reddit-clone/src/main/java/com/javateam/model/Subreddit.java
+/home/venkatasai/reddit-clone/src/main/java/com/javateam/RedditCloneApplication.java
+/home/venkatasai/reddit-clone/src/main/java/com/javateam/model/Comment.java
+/home/venkatasai/reddit-clone/src/main/java/com/javateam/repository/PostRepository.java
+/home/venkatasai/reddit-clone/src/main/java/com/javateam/repository/SubredditRepository.java
+/home/venkatasai/reddit-clone/src/main/java/com/javateam/model/VoteType.java

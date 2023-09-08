@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Posts</title>
+</head>
+<body>
+<h1>List of Posts</h1>
+<a th:href="@{/create-post}">Create Post</a>
+<a th:href="@{/create-community}">Create Community</a>
+<a th:href="@{/register}">Create User</a>
+<div sec:authorize="!isAuthenticated()">
+    <form th:action="@{/login}">
+        <input type="submit" value="Login">
+    </form>
+</div>
+<div sec:authorize="isAuthenticated()" >
+    <form th:action="@{/logout}" method="POST">
+        <button><input type="submit" value="Logout"></button>
+    </form>
+</div>
+<table>
+    <thead>
+    <tr>
+        <th>Post Name</th>
+        <th>URL</th>
+        <th>Description</th>
+        <th>Vote Count</th>
+        <th>Created Date</th>
+        <th>Subreddit</th>
+        <th>UpVote</th>
+        <th>DownVote</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    <tr th:each="post : ${posts}">
+        <td><a th:href="@{${post.postId}}"><span th:text="${post.postName}"></span></a></td>
+        <td th:text="${post.url}"></td>
+        <td th:text="${post.description}"></td>
+        <td th:text="${post.voteCount}"></td>
+        <td th:text="${#temporals.format(post.createdDate, 'yyyy-MM-dd h:mma')}"></td>
+        <td th:text="${post.subreddit != null} ? ${post.subreddit.name} : ''"></td>
+
+        <td>
+            <div sec:authorize="isAuthenticated()">
+                <form th:if="${voteType == null || voteType == 'DOWNVOTE'}" th:action="@{/posts/upvote/{postId}/UPVOTE(postId=${post.postId})}" method="Get">
+                    <input type="hidden" name="email" th:value="${#authentication.principal.username}">
+                    <input type="submit" value="Upvote">
+                </form>
+                <form th:if="${voteType == null || voteType == 'UPVOTE'}" th:action="@{/posts/downvote/{postId}/DOWNVOTE(postId=${post.postId})}" method="Get">
+                    <input type="hidden" name="email" th:value="${#authentication.principal.username}">
+                    <input type="submit" value="Downvote">
+                </form>
+            </div>
+        </td>
+
+
+        <div sec:authorize="isAnonymous()">
+            <p>Please log in to upvote or downvote.</p>
+        </div>
+
+    </tr>
+
+    </tbody>
+</table>
+</body>
+</html>

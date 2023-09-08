@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Post</title>
+</head>
+<body>
+<h1>Create a New Post</h1>
+<form th:action="@{/save-post}" method="post" th:object="${post}">
+    <label for="postName">Post Name:</label>
+    <input type="text" id="postName" name="postName" th:field="*{postName}" th:readonly="${post.postId != null}" required><br>
+
+    <label for="url">URL:</label>
+    <input type="text" id="url" name="url" th:field="*{url}" th:readonly="${post.postId != null}"><br>
+
+    <label for="description">Description:</label>
+    <textarea id="description" name="description" th:field="*{description}" required></textarea><br>
+
+    <div th:if="${post.postId == null}">
+        <label for="subreddit">Select Subreddit:</label>
+        <select id="subreddit" name="subreddit.id" th:field="*{subreddit.id}" th:readonly="${post.postId != null}" required>
+            <option value="">Select</option>
+            <option th:each="subreddit : ${subreddits}" th:value="${subreddit.id}" th:text="${subreddit.name}"></option>
+        </select><br>
+    </div>
+
+    <input type="hidden" name="postId" th:if="${post.postId != null}" th:value="${post.postId}">
+    <input type="hidden" name="subreddit" th:if="${post.postId != null}" th:value="${post.subreddit.id}">
+    <input type="hidden" name="createdDate" th:if="${post.postId != null}" th:value="${post.createdDate}">
+    <input type="submit" th:value="${post.postId != null ? 'Update Post' : 'Create Post'}">
+</form>
+
+</body>
+</html>
