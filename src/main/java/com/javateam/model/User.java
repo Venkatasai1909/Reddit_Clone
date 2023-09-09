@@ -1,7 +1,11 @@
 package com.javateam.model;
 
+
+
 import jakarta.persistence.*;
 
+import static jakarta.persistence.FetchType.LAZY;
+import static jakarta.persistence.GenerationType.IDENTITY;
 import java.time.Instant;
 
 @Entity

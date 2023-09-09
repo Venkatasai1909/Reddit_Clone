@@ -51,6 +51,11 @@ public class HomeController {
             post.setUpdatedAt(Instant.now());
         }
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        post.setEmail(post.getEmail());
+        User user = userService.findByEmail(post.getEmail());
+        post.setUser(user);
+
         postService.save(post);
 
         return "redirect:/posts";
@@ -184,6 +189,5 @@ public class HomeController {
 
         return "redirect:/posts";
     }
-
 
 }

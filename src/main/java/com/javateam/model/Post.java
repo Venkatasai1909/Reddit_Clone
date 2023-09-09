@@ -1,15 +1,16 @@
 package com.javateam.model;
 
+
 import jakarta.persistence.*;
 
+import static jakarta.persistence.FetchType.LAZY;
+import static jakarta.persistence.GenerationType.IDENTITY;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 public class Post {
-
-
     public String getPostName() {
         return postName;
     }
@@ -76,7 +77,18 @@ public class Post {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId", referencedColumnName = "userId")
     private User user;
+
     private Instant createdAt;
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    private String email;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id", referencedColumnName = "id")
     private Subreddit subreddit;

@@ -47,7 +47,7 @@
         <td th:text="${post.voteCount}"></td>
         <td th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd h:mma')}"></td>
         <td th:text="${post.subreddit != null} ? ${post.subreddit.name} : ''"></td>
-
+        
         <td>
             <div sec:authorize="isAuthenticated()">
                 <form th:if="${voteType == null || voteType == 'DOWNVOTE'}" th:action="@{/posts/upvote/{postId}/UPVOTE(postId=${post.postId})}" method="Get">
@@ -56,14 +56,14 @@
                 </form>
         </td>
         <td>
-                <form th:if="${voteType == null || voteType == 'UPVOTE'}" th:action="@{/posts/downvote/{postId}/DOWNVOTE(postId=${post.postId})}" method="Get">
-                    <input type="hidden" name="email" th:value="${#authentication.principal.username}">
-                    <input type="submit" value="Downvote">
-                </form>
+            <form th:if="${voteType == null || voteType == 'UPVOTE'}" th:action="@{/posts/downvote/{postId}/DOWNVOTE(postId=${post.postId})}" method="Get">
+                <input type="hidden" name="email" th:value="${#authentication.principal.username}">
+                <input type="submit" value="Downvote">
+            </form>
             </div>
         </td>
-
     </tr>
+
 
     </tbody>
 </table>

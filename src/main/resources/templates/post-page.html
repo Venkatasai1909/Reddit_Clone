@@ -32,14 +32,9 @@
     <td th:text="${post.subreddit.name}"></td>
   </tr>
 <div sec:authorize="isAuthenticated()">
-  <form  action="#" th:action="@{'/addComment/'+${post.postId}}" method="post">
+  <form action="#" th:action="@{'/addComment/'+${post.postId}}" method="post">
     <div>
-      <label for="name">Name</label>
-      <input id="name" type="text" name="name" required>
-    </div>
-    <div>
-      <label for="email">Email</label>
-      <input id="email" name="email" type="text" required>
+      <input type="hidden" name="email" th:value="${#authentication.principal.username}">
     </div>
     <div>
       <label for="comment">Comment</label>
@@ -47,16 +42,21 @@
     </div>
     <button type="submit">Submit Comment</button>
   </form>
+</div>
 
   <ol>
-
     <li th:each="comment : ${post.comments}" th:if="${comment.parentComment == null}">
       <strong th:text="${comment.name}"></strong> &nbsp; &nbsp;
       <span th:text="'Created At ' + ${#temporals.format(comment.createdAt, 'dd/MM/yyyy, hh:mm a')}"></span>
       <span th:text="${comment.updatedAt != null ? 'Updated at ' + #temporals.format(comment.updatedAt, 'dd/MM/yyyy, hh:mm a') : ''}"></span>
       <div th:text="${comment.text}"></div> &nbsp; &nbsp;
-      <span><a th:href="@{'/editComment/' + ${comment.id}}">edit</a></span>
-      <span><a th:href="@{'/deleteComment/' + ${comment.id}}">Delete</a></span>
+      <div sec:authorize="isAuthenticated()">
+        <span th:if="${#authentication.principal.username == comment.email or #authentication.principal.username == post.email}">
+        <span><a th:href="@{'/editComment/' + ${comment.id}}">edit</a></span>
+        <span><a th:href="@{'/deleteComment/' + ${comment.id}}">Delete</a></span>
+        </span>
+      </div>
+
       <div th:if="${comment.replies.size() > 0}">
         <a th:href="@{'/viewReplies/' + ${comment.id}}">Replies (<span th:text="${comment.replies.size()}"></span>)</a>
       </div>
@@ -68,13 +68,16 @@
       </div>
     </li>
   </ol>
-
-  <form th:action="@{'/update-post/' + ${post.postId}}" method="POST">
-    <input type="submit" value="Edit">
-  </form>
-  <form th:action="@{'/delete-post/' + ${post.postId}}" method="POST">
-    <input type="submit" value="Delete">
-  </form>
+  <div sec:authorize="isAuthenticated()">
+    <div th:if="${#authentication.principal.username == post.email}">
+      <form th:action="@{'/update-post/' + ${post.postId}}" method="POST">
+        <input type="submit" value="Edit">
+      </form>
+      <form th:action="@{'/delete-post/' + ${post.postId}}" method="POST">
+        <input type="submit" value="Delete">
+      </form>
+    </div>
+  </div>
 </div>
 </table>
 </body>

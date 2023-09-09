@@ -31,7 +31,6 @@ public class CommentController {
     @PostMapping("/addComment/{postId}")
     public String addComment(
             @PathVariable Integer postId,
-            @RequestParam String name,
             @RequestParam String email,
             @RequestParam String commentText
     ){
@@ -39,7 +38,8 @@ public class CommentController {
             Comment comment = new Comment();
             User user = userService.findByEmail(email);
             comment.setUser(user);
-            comment.setName(name);
+            comment.setUserId(user.getUserId());
+            comment.setName(user.getUsername());
             comment.setEmail(email);
             comment.setPostId(postId);
             comment.setText(commentText);

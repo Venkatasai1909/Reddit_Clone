@@ -1,5 +1,6 @@
 package com.javateam.model;
 
+
 import jakarta.persistence.*;
 
 import static jakarta.persistence.FetchType.LAZY;

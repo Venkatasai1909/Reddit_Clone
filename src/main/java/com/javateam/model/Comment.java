@@ -2,6 +2,8 @@ package com.javateam.model;
 
 import jakarta.persistence.*;
 
+import static jakarta.persistence.FetchType.LAZY;
+import static jakarta.persistence.GenerationType.IDENTITY;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -122,6 +124,16 @@ public class Comment {
     public List<Comment> getReplies() {
         return replies;
     }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
+
+    private Integer userId;
 
     public void setReplies(List<Comment> replies) {
         this.replies = replies;

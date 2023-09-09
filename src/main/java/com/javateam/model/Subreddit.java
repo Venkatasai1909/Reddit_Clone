@@ -1,14 +1,14 @@
 package com.javateam.model;
 
-import jakarta.persistence.*;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.List;
+import jakarta.persistence.*;
 
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
+import java.time.Instant;
+import java.util.List;
+
+
 
 @Entity
 public class Subreddit {
