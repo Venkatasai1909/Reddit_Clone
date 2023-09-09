@@ -133,6 +133,13 @@ public class Post {
 
     private Instant updatedAt;
 
+    private Integer mediaId;
 
+    public Integer getMediaId() {
+        return mediaId;
+    }
 
+    public void setMediaId(Integer mediaId) {
+        this.mediaId = mediaId;
+    }
 }
