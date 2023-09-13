@@ -6,12 +6,10 @@
 </head>
 <body>
 <div>
-    <form action="#" th:action="@{'/editComment/{commentId}'(commentId=${comment.id})}"
+    <form action="#" th:action="@{'/editComment/{commentId}'(commentId=${comment.commentId})}"
           th:object="${comment}" method="post">
-        <input type="hidden" th:field="*{post}">
-        <input type="hidden" name="commentId" th:value="${comment.id}" />
         <label for="new-comment-text">Comment</label>
-        <textarea id="new-comment-text" th:field="*{text}" th:text="${comment.text}"></textarea>
+        <textarea id="new-comment-text" th:field="*{content}" th:text="${comment.content}"></textarea>
         <button type="submit">Save</button>
     </form>
 

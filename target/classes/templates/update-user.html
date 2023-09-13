@@ -6,15 +6,12 @@
 </head>
 <body>
 <h1>Update User</h1>
-<form th:action="@{/saveUser}" method="post" th:object="${user}">
+<form th:action="@{/updateUser}" method="post" th:object="${user}" enctype="multipart/form-data">
     <label for="username">Username:</label>
-    <input type="text" id="username" name="username" th:field="*{username}" required><br>
-
-    <input type="hidden" name="userId" th:value="${user.userId}">
-    <input type="hidden" name="password" th:value="${user.password}">
-    <input type="hidden" name="email" th:value="${user.email}">
-    <input type="hidden" name="created" th:value="${user.created}">
-    <input type="submit" value="Update User">
+    <input type="text" id="username" name="username" th:field="*{username}" th:value="${user.username}" required><br>
+    <input type="password" name="password"  th:field="*{password}" >
+    <input type="file" name="file" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
+    <input type="submit" value="UpdateUser">
 </form>
 </body>
 </html>

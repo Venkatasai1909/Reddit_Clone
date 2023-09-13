@@ -1,0 +1,59 @@
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+
+
+strong {
+    color: #333;
+    font-weight: bold;
+}
+
+span {
+    color: #777;
+}
+
+div {
+    margin-bottom: 10px;
+}
+
+ol {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+.vote span {
+    margin: 0 5px;
+    font-weight: bold;
+}
+
+li span a {
+    text-decoration: none;
+    color: #007bff;
+    margin-right: 10px;
+}
+
+a[th:href*="/viewReplies/"] {
+    color: #007bff;
+    text-decoration: underline;
+}
+
+a[th:href*="/replyOnComment/"] {
+    color: #007bff;
+    text-decoration: none;
+}

@@ -15,7 +15,9 @@ public class MediaService {
         return mediaRepository.save(media);
     }
 
-
+    public Media update(Media media) {
+        return mediaRepository.save(media);
+    }
     public List<Media> viewAll() {
         return (List<Media>) mediaRepository.findAll();
     }

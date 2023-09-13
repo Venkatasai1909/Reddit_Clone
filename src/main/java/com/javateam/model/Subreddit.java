@@ -1,27 +1,29 @@
 package com.javateam.model;
 
-
 import jakarta.persistence.*;
 
-import static jakarta.persistence.FetchType.LAZY;
-import static jakarta.persistence.GenerationType.IDENTITY;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
-
-
-
 @Entity
+@Table(name="subreddits")
 public class Subreddit {
     @Id
-    @GeneratedValue(strategy = IDENTITY)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer subredditId;
+    private String name;
+    @ManyToOne
+    @JoinColumn(name="user_id")
+    private User user;
+    @OneToMany(mappedBy = "subreddit", cascade = {CascadeType.REMOVE})
+    private List<Post> posts;
+    private LocalDateTime createdAt;
 
-    public Integer getId() {
-        return id;
+    public Integer getSubredditId() {
+        return subredditId;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setSubredditId(Integer subredditId) {
+        this.subredditId = subredditId;
     }
 
     public String getName() {
@@ -32,12 +34,12 @@ public class Subreddit {
         this.name = name;
     }
 
-    public String getDescription() {
-        return description;
+    public User getUser() {
+        return user;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public List<Post> getPosts() {
@@ -48,28 +50,11 @@ public class Subreddit {
         this.posts = posts;
     }
 
-    public Instant getCreatedDate() {
-        return createdDate;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreatedDate(Instant createdDate) {
-        this.createdDate = createdDate;
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    private String name;
-    private String description;
-    @OneToMany(fetch = LAZY)
-    private List<Post> posts;
-    private Instant createdDate;
-    @ManyToOne(fetch = LAZY)
-    private User user;
-
 }

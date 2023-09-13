@@ -1,38 +1,53 @@
 package com.javateam.model;
 
-
 import jakarta.persistence.*;
 
-import static jakarta.persistence.FetchType.LAZY;
-import static jakarta.persistence.GenerationType.IDENTITY;
-import java.time.Instant;
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
-
 @Entity
+@Table(name="posts")
 public class Post {
-    public String getPostName() {
-        return postName;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer postId;
+    private String postName;
+    @Column(columnDefinition = "TEXT")
+    private String description;
+    private String url;
+    private LocalDateTime createdAt;
+    private Integer voteCount = 0;
+    @OneToMany(mappedBy = "post", cascade = {CascadeType.REMOVE, CascadeType.PERSIST, CascadeType.MERGE})
+    private List<Comment> comments;
+    @ManyToOne
+    @JoinColumn(name="subreddit_id")
+    private Subreddit subreddit;
+    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<Vote> votes;
+    @ManyToOne
+    @JoinColumn(name="user_id")
+    private User user;
+    @OneToOne(cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
+    @JoinColumn(name="media_id")
+    private Media media;
+    @Column(name="is_published")
+    private Boolean isPublished;
+
+    public Boolean getIsPublished() {
+        return isPublished;
     }
 
-    public void setPostName(String postName) {
-        this.postName = postName;
+    public void setIsPublished(Boolean published) {
+        isPublished = published;
     }
 
-    public String getUrl() {
-        return url;
+    private LocalDateTime publishedAt;
+
+    public LocalDateTime getPublishedAt() {
+        return publishedAt;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
+    public void setPublishedAt(LocalDateTime publishedAt) {
+        this.publishedAt = publishedAt;
     }
 
     public Integer getVoteCount() {
@@ -43,20 +58,12 @@ public class Post {
         this.voteCount = voteCount;
     }
 
-    public User getUser() {
-        return user;
+    public Media getMedia() {
+        return media;
     }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Subreddit getSubreddit() {
-        return subreddit;
-    }
-
-    public void setSubreddit(Subreddit subreddit) {
-        this.subreddit = subreddit;
+    public void setMedia(Media media) {
+        this.media = media;
     }
 
     public Integer getPostId() {
@@ -67,34 +74,37 @@ public class Post {
         this.postId = postId;
     }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer postId;
-    private String postName;
-    private String url;
-    private String description;
-    private Integer voteCount = 0;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId", referencedColumnName = "userId")
-    private User user;
-
-    private Instant createdAt;
-
-    public String getEmail() {
-        return email;
+    public String getPostName() {
+        return postName;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setPostName(String postName) {
+        this.postName = postName;
     }
 
-    private String email;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id", referencedColumnName = "id")
-    private Subreddit subreddit;
+    public String getDescription() {
+        return description;
+    }
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
-    public List<Comment> comments = new ArrayList<>();
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
 
     public List<Comment> getComments() {
         return comments;
@@ -102,6 +112,14 @@ public class Post {
 
     public void setComments(List<Comment> comments) {
         this.comments = comments;
+    }
+
+    public Subreddit getSubreddit() {
+        return subreddit;
+    }
+
+    public void setSubreddit(Subreddit subreddit) {
+        this.subreddit = subreddit;
     }
 
     public List<Vote> getVotes() {
@@ -112,34 +130,28 @@ public class Post {
         this.votes = votes;
     }
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Vote> votes = new ArrayList<>();
-
-    public Instant getCreatedAt() {
-        return createdAt;
+    public User getUser() {
+        return user;
     }
 
-    public void setCreatedAt(Instant createdAt) {
-        this.createdAt = createdAt;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    public Instant getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(Instant updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    private Instant updatedAt;
-
-    private Integer mediaId;
-
-    public Integer getMediaId() {
-        return mediaId;
-    }
-
-    public void setMediaId(Integer mediaId) {
-        this.mediaId = mediaId;
+    @Override
+    public String toString() {
+        return "Post{" +
+                "postId=" + postId +
+                ", postName='" + postName + '\'' +
+                ", description='" + description + '\'' +
+                ", url='" + url + '\'' +
+                ", createdAt=" + createdAt +
+                ", voteCount=" + voteCount +
+//                ", comments=" + comments +
+                ", subreddit=" + subreddit +
+//                ", votes=" + votes +
+                ", user=" + user +
+//                ", media=" + media +
+                '}';
     }
 }

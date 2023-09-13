@@ -1,13 +1,32 @@
 package com.javateam.model;
 
-
 import jakarta.persistence.*;
-
-import static jakarta.persistence.FetchType.LAZY;
-import static jakarta.persistence.GenerationType.IDENTITY;
-
 @Entity
+@Table(name="votes")
 public class Vote {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer voteId;
+    private VoteType voteType;
+    @ManyToOne
+    @JoinColumn(name="post_id")
+    private Post post;
+    @ManyToOne
+    @JoinColumn(name="user_id")
+    private User user;
+
+    public Comment getComment() {
+        return comment;
+    }
+
+    public void setComment(Comment comment) {
+        this.comment = comment;
+    }
+
+    @ManyToOne
+    @JoinColumn(name="comment_id")
+    private Comment comment;
+
     public Integer getVoteId() {
         return voteId;
     }
@@ -15,10 +34,6 @@ public class Vote {
     public void setVoteId(Integer voteId) {
         this.voteId = voteId;
     }
-
-    @Id
-    @GeneratedValue(strategy = IDENTITY)
-    private Integer voteId;
 
     public VoteType getVoteType() {
         return voteType;
@@ -43,13 +58,4 @@ public class Vote {
     public void setUser(User user) {
         this.user = user;
     }
-
-    private VoteType voteType;
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "postId", referencedColumnName = "postId")
-    private Post post;
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "userId", referencedColumnName = "userId")
-    private User user;
-
 }

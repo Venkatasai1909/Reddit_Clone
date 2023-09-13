@@ -5,21 +5,12 @@
   <title>Reply Comment</title>
 </head>
 <body>
-<div th:text="${comment.text}"></div>
-<form action="#" th:action="@{'/replyOnComment/{commentId}'(commentId=${comment.id})}"
+<div th:text="${comment.content}"></div>
+<form action="#" th:action="@{'/replyOnComment/{commentId}'(commentId=${comment.commentId})}"
       th:object="${replyComment}" method="post">
 
-  <div>
-    <label for="name">Name</label>
-    <input id="name" type="text" th:field="*{name}" required>
-  </div>
-  <div>
-    <label for="email">Email</label>
-    <input id="email" th:field="*{email}" type="text" required>
-  </div>
-
   <label for="new-comment-text">Comment</label>
-  <textarea id="new-comment-text" th:field="*{text}" ></textarea>
+  <textarea id="new-comment-text" th:field="*{content}" ></textarea>
   <button type="submit">Save</button>
 </form>
 </body>

@@ -1,24 +1,32 @@
 package com.javateam.service;
 
+import com.javateam.model.Post;
 import com.javateam.model.User;
+import com.javateam.model.Vote;
+import com.javateam.model.VoteType;
 import com.javateam.repository.UserRepository;
+import com.javateam.repository.VoteRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class UserService {
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
+    private VoteRepository voteRepository;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        this.userRepository  = userRepository;
+    @Autowired
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, VoteRepository voteRepository) {
+        this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.voteRepository = voteRepository;
     }
 
     public void saveUser(User user) {
-        String bcryptPassword = passwordEncoder.encode(user.getPassword());
-        user.setPassword(bcryptPassword);
-
         userRepository.save(user);
     }
 
@@ -29,4 +37,30 @@ public class UserService {
     public User findByEmail(String email) {
         return userRepository.findByEmail(email);
     }
+
+    public User findByUserName(String username) {
+        return userRepository.findByUsername(username);
+    }
+
+    public List<Post> findAllUpvotePostGivenByUserId(Integer userId) {
+        List<Vote> votes = voteRepository.findAllPostByUserIdAndVoteType(userId, VoteType.UPVOTE);
+        List<Post> postList = new ArrayList<>();
+        votes.forEach(vote -> {
+            postList.add(vote.getPost());
+        });
+        System.out.println(postList.size());
+
+        return postList;
+    }
+
+    public List<Post> findAllDownvotePostGivenByUserId(Integer userId) {
+        List<Vote> votes = voteRepository.findAllPostByUserIdAndVoteType(userId, VoteType.DOWNVOTE);
+        List<Post> postList = new ArrayList<>();
+        votes.forEach(vote -> {
+            postList.add(vote.getPost());
+        });
+
+        return postList;
+    }
+
 }

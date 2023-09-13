@@ -2,75 +2,78 @@ package com.javateam.model;
 
 import jakarta.persistence.*;
 
-import static jakarta.persistence.FetchType.LAZY;
-import static jakarta.persistence.GenerationType.IDENTITY;
-import java.time.Instant;
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
-
 @Entity
+@Table(name="comments")
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    private String name;
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    private String email;
-
-    private String text;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "postId", referencedColumnName = "postId", insertable = false, updatable = false)
-    private Post post;
-
-    @Column(name = "postId")
-    private Integer postId;
-
-    private Instant createdAt;
-    private Instant updatedAt;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId", referencedColumnName = "userId", insertable = false, updatable = false)
-    private User user;
-
+    private Integer commentId;
+    private String content;
+    private Integer voteCount = 0;
+    private LocalDateTime createdAt;
     @ManyToOne
-    @JoinColumn(name = "parent_comment_id")
+    @JoinColumn(name = "post_id")
+    private Post post;
+    @ManyToOne
+    @JoinColumn(name="user_id")
+    private User user;
+    @ManyToOne
+    @JoinColumn(name="parentComment_id")
     private Comment parentComment;
 
+    public Integer getVoteCount() {
+        return voteCount;
+    }
+
+    public void setVoteCount(Integer voteCount) {
+        this.voteCount = voteCount;
+    }
+
+    public List<Vote> getVotes() {
+        return votes;
+    }
+
+    public void setVotes(List<Vote> votes) {
+        this.votes = votes;
+    }
+
     @OneToMany(mappedBy = "parentComment", cascade = CascadeType.ALL)
-    private List<Comment> replies = new ArrayList<>();
+    private List<Comment> replies;
 
-    public Integer getId() {
-        return id;
+    @OneToMany(mappedBy = "comment", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<Vote> votes;
+    public User getUser() {
+        return user;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    public String getText() {
-        return text;
+    public Integer getCommentId() {
+        return commentId;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setCommentId(Integer commentId) {
+        this.commentId = commentId;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     public Post getPost() {
@@ -79,38 +82,6 @@ public class Comment {
 
     public void setPost(Post post) {
         this.post = post;
-    }
-
-    public Integer getPostId() {
-        return postId;
-    }
-
-    public void setPostId(Integer postId) {
-        this.postId = postId;
-    }
-
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Instant createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public Instant getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(Instant updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 
     public Comment getParentComment() {
@@ -124,16 +95,6 @@ public class Comment {
     public List<Comment> getReplies() {
         return replies;
     }
-
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
-
-    private Integer userId;
 
     public void setReplies(List<Comment> replies) {
         this.replies = replies;

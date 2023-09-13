@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <link rel="stylesheet" th:href="@{/css/view-replies.css}" />
+  <script>
+        function toggleReplyForm(commentId) {
+            var replyForm = document.getElementById("reply-comment-form-" + commentId);
+            if (replyForm.style.display === "none" || replyForm.style.display === "") {
+                replyForm.style.display = "block";
+            } else {
+                replyForm.style.display = "none";
+            }
+        }
+  </script>
+</head>
+
+<body>
+<ol>
+  <strong th:text="${comment.user.username}"></strong> &nbsp; &nbsp;
+  <span th:text="'Created At ' + ${#temporals.format(comment.createdAt, 'dd/MM/yyyy, hh:mm a')}"></span>
+  <div th:text="${comment.content}"></div> &nbsp; &nbsp;
+  <li th:each="comment : ${replies}">
+    <strong th:text="${comment.user.username}"></strong> &nbsp; &nbsp;
+    <span th:text="'Created At ' + ${#temporals.format(comment.createdAt, 'dd/MM/yyyy, hh:mm a')}"></span>
+    <div th:text="${comment.content}"></div> &nbsp; &nbsp;
+    <div class="vote">
+      <form
+              th:action="@{/comments/upvote/{commentId}/UPVOTE(commentId=${comment.commentId})}" method="Get">
+        <button type="submit">
+              <span class="material-symbols-outlined">
+                  thumb_up
+              </span>
+        </button>
+      </form>
+      <span th:text="${comment.voteCount}"></span>
+      <form
+              th:action="@{/comments/downvote/{commentId}/DOWNVOTE(commentId=${comment.commentId})}" method="Get">
+        <button type="submit">
+                <span class="material-symbols-outlined">
+                    thumb_down
+                </span>
+        </button>
+      </form>
+    </div>
+<!--    <div th:if="${comment.replies.size() > 0}">-->
+<!--      <a th:href="@{'/viewReplies/' + ${comment.commentId}}">Replies (<span th:text="${comment.replies.size()}"></span>)</a>-->
+<!--    </div>-->
+    <div sec:authorize="isAuthenticated()">
+      <div th:if="${#authentication.principal.username == comment.user.email}">
+        <span><a th:href="@{'/editComment/' + ${comment.commentId}}">edit</a></span>
+        <span><a th:href="@{'/deleteComment/' + ${comment.commentId}}">Delete</a></span>
+      </div>
+      <div th:if="${comment.replies.size() > 0}">
+        <a th:href="@{'/viewReplies/' + ${comment.commentId}}">Replies (<span th:text="${comment.replies.size()}"></span>)</a>
+      </div>
+      <div th:unless="${comment.replies.size() > 0}">
+        Replies: <span th:text="${comment.replies.size()}"></span>
+      </div>
+      <div>
+        <span><a href="#" th:attr="onclick='toggleReplyForm(\'' + ${comment.commentId} + '\')'">Reply</a></span>
+      </div>
+      <div th:id="'reply-comment-form-' + ${comment.commentId}" style="display: none;">
+        <form th:action="@{'/replyOnComment/' + ${comment.commentId}}" method="post">
+          <label for="new-comment-text">Comment</label>
+          <textarea id="new-comment-text" name="content" th:value="${content}" ></textarea>
+          <button type="submit">Save</button>
+        </form>
+      </div>
+  </div>
+  </li>
+</ol>
+</body>
+</html>

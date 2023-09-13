@@ -12,13 +12,6 @@ public enum VoteType {
         this.direction = direction;
     }
 
-    public static VoteType lookup(Integer direction) {
-        return Arrays.stream(VoteType.values())
-                .filter(value -> value.getDirection().equals(direction))
-                .findAny()
-                .orElseThrow(() -> new RuntimeException("Vote not found"));
-    }
-
     public Integer getDirection() {
         return direction;
     }

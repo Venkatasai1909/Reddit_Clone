@@ -7,6 +7,7 @@ import com.javateam.model.Vote;
 import com.javateam.repository.PostRepository;
 import com.javateam.repository.SubredditRepository;
 import com.javateam.repository.VoteRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,7 +16,7 @@ public class PostService {
     private PostRepository postRepository;
     private SubredditRepository subredditRepository;
     private VoteRepository voteRepository;
-
+    @Autowired
     public PostService(PostRepository postRepository, SubredditRepository subredditRepository, VoteRepository voteRepository) {
         this.voteRepository = voteRepository;
         this.postRepository = postRepository;
@@ -23,7 +24,7 @@ public class PostService {
     }
 
     public List<Post> findAll(){
-        return postRepository.findAllByOrderByVoteCountDesc();
+        return postRepository.findAllByOrderByCreatedAtDesc();
     }
 
     public void save(Post post){
@@ -55,7 +56,34 @@ public class PostService {
         voteRepository.save(vote);
     }
 
+    public List<Post> findAllPostBySubredditName(String subredditName){
+        return postRepository.subredditRelatedPost(subredditName);
+    }
 
+    public List<Post> SearchByPostNameSubredditDescriptionURL(String text){
+        return postRepository.SearchByPostNameSubredditDescriptionURL(text);
+    }
 
+    public List<Post> findAllHotPost(){
+        return postRepository.findHotPosts();
+    }
 
+    public List<Post> findAllNewPost(){
+        return postRepository.findAllByOrderByCreatedAtDesc();
+    }
+
+    public List<Post> findAllTopPost(){
+        return postRepository.findAllByVoteCountDescAndRecentlyCreatedDesc();
+    }
+
+    public Subreddit findBySubredditName(String subredditName) {
+        return subredditRepository.findByName(subredditName);
+    }
+    public List<Post> findAllDraftPostsOfUser(Integer userId) {
+        return postRepository.findAllDraftPostsOfUser(userId);
+    }
+
+    public  List<Post> findALlPostsByUserIdByOrderByVoteCountDesc(Integer userId) {
+        return postRepository.findALlPostsByUserIdOrderByVoteCountDesc(userId);
+    }
 }

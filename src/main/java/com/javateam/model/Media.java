@@ -1,35 +1,25 @@
 package com.javateam.model;
+
 import jakarta.persistence.*;
 
-
 import java.sql.Blob;
-import java.util.Date;
-
 @Entity
+@Table(name="medias")
 public class Media {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
-    @Lob
+    private Integer mediaId;
     private Blob media;
-
-    public String getContentType() {
-        return contentType;
-    }
-
-    public void setContentType(String contentType) {
-        this.contentType = contentType;
-    }
-
     private String contentType;
+    @OneToOne(mappedBy = "media")
+    private Post post;
 
-    public Integer getId() {
-        return id;
+    public Integer getMediaId() {
+        return mediaId;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setMediaId(Integer mediaId) {
+        this.mediaId = mediaId;
     }
 
     public Blob getMedia() {
@@ -40,5 +30,20 @@ public class Media {
         this.media = media;
     }
 
+    public String getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
+    public Post getPost() {
+        return post;
+    }
+
+    public void setPost(Post post) {
+        this.post = post;
+    }
 
 }

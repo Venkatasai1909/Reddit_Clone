@@ -1,16 +1,55 @@
 package com.javateam.model;
 
-
-
 import jakarta.persistence.*;
 
-import static jakarta.persistence.FetchType.LAZY;
-import static jakarta.persistence.GenerationType.IDENTITY;
-import java.time.Instant;
-
+import java.time.LocalDateTime;
+import java.util.List;
 @Entity
 @Table(name="users")
 public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer userId;
+    private String username;
+    private String password;
+    private String email;
+    private LocalDateTime createdAt;
+    private boolean enabled;
+    private Integer karma = 0;
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE,CascadeType.MERGE})
+    private List<Post> posts;
+    @OneToMany(mappedBy = "user",cascade = {CascadeType.REMOVE, CascadeType.MERGE})
+    private List<Subreddit> subreddits;
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.REMOVE, CascadeType.MERGE})
+    private List<Comment> comments;
+
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.REMOVE, CascadeType.MERGE})
+    private List<Vote> votes;
+
+    public List<Vote> getVotes() {
+        return votes;
+    }
+
+    public void setVote(List<Vote> votes) {
+        this.votes = votes;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
+
     public String getUsername() {
         return username;
     }
@@ -35,12 +74,12 @@ public class User {
         this.email = email;
     }
 
-    public Instant getCreated() {
-        return created;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreated(Instant created) {
-        this.created = created;
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     public boolean isEnabled() {
@@ -51,22 +90,41 @@ public class User {
         this.enabled = enabled;
     }
 
-    public Integer getUserId() {
-        return userId;
+    public List<Post> getPosts() {
+        return posts;
     }
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
+    public void setPosts(List<Post> posts) {
+        this.posts = posts;
     }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer userId;
-    private String username;
-    private String password;
-    private String email;
-    private Instant created;
-    private boolean enabled;
+    public List<Subreddit> getSubreddits() {
+        return subreddits;
+    }
+
+    public void setSubreddits(List<Subreddit> subreddits) {
+        this.subreddits = subreddits;
+    }
+
+    public Media getMedia() {
+        return media;
+    }
+
+    public void setMedia(Media media) {
+        this.media = media;
+    }
+
+    public Integer getKarma() {
+        return karma;
+    }
+
+    public void setKarma(Integer karma) {
+        this.karma = karma;
+    }
+
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "media_id")
+    private Media media;
 
 
 }
