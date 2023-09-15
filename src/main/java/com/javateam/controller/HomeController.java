@@ -43,8 +43,8 @@ public class HomeController {
     }
 
     @GetMapping("/")
-    public String getPosts(){
-        return "redirect:/posts";
+    public String getPosts(Model model){
+        return getAllPosts(model);
     }
 
     @GetMapping("/posts")
