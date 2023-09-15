@@ -10,8 +10,8 @@ com/javateam/model/Comment.class
 com/javateam/RedditCloneApplication.class
 com/javateam/repository/MediaRepository.class
 com/javateam/repository/CommentRepository.class
-com/javateam/model/User.class
 com/javateam/repository/UserRepository.class
+com/javateam/model/User.class
 com/javateam/service/SubredditService.class
 com/javateam/model/Post.class
 com/javateam/config/SecurityConfig.class
