@@ -42,12 +42,12 @@ public class HomeController {
         this.subredditRepository = subredditRepository;
     }
 
-    @GetMapping("/")
-    public String getPosts(Model model){
-        return getAllPosts(model);
-    }
+//    @GetMapping("/")
+//    public String getPosts(Model model){
+//        return getAllPosts(model);
+//    }
 
-    @GetMapping("/posts")
+    @GetMapping({"/","/posts"})
     public String getAllPosts(Model model) {
         List<Post> posts = postService.findAll();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
