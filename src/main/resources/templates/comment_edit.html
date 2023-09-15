@@ -6,14 +6,21 @@
 </head>
 <body>
 <div>
-    <form action="#" th:action="@{'/editComment/{commentId}'(commentId=${comment.commentId})}"
+    <form th:action="@{'/editComment/{commentId}'(commentId=${comment.commentId})}"
           th:object="${comment}" method="post">
         <label for="new-comment-text">Comment</label>
         <textarea id="new-comment-text" th:field="*{content}" th:text="${comment.content}"></textarea>
+        <input th:if="${page!=null}" type="hidden" name="page" th:value="${page}">
         <button type="submit">Save</button>
     </form>
-
-    <a th:href="@{'/cancelEdit/'+${commentId}}" th:text="'Cancel'">Cancel</a>a
+    <div th:if="${page!=null}">
+        <form th:action="@{'/profile/cancelEdit/'+${commentId}}">
+            <input type="submit" value="Cancel">
+        </form>
+    </div>
+    <div th:unless="${page!=null}">
+        <a th:href="@{'/cancelEdit/'+${commentId}}" th:text="'Cancel'">Cancel</a>
+    </div>
 </div>
 </body>
 </html>

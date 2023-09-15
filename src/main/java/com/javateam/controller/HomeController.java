@@ -1,9 +1,11 @@
 package com.javateam.controller;
 
 import com.javateam.model.*;
+import com.javateam.repository.SubredditRepository;
 import com.javateam.service.MediaService;
 import com.javateam.service.PostService;
 import com.javateam.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,21 +20,26 @@ import javax.sql.rowset.serial.SerialException;
 import java.io.IOException;
 import java.sql.Blob;
 import java.sql.SQLException;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Controller
 public class HomeController {
     private PostService postService;
     private UserService userService;
     private MediaService mediaService;
+    private final SubredditRepository subredditRepository;
 
     @Autowired
-    public HomeController(PostService postService, UserService userService, MediaService mediaService) {
+    public HomeController(PostService postService, UserService userService, MediaService mediaService,
+                          SubredditRepository subredditRepository) {
         this.postService = postService;
         this.userService = userService;
         this.mediaService = mediaService;
+        this.subredditRepository = subredditRepository;
     }
 
     @GetMapping("/posts")
@@ -46,7 +53,6 @@ public class HomeController {
         }
 
         List<Subreddit> subredditList = postService.findAllSubreddit();
-
         model.addAttribute("subredditList", subredditList);
         model.addAttribute("posts", posts);
 
@@ -64,17 +70,21 @@ public class HomeController {
     @GetMapping("/create-post")
     public String createPost(Model model) {
         Post post = new Post();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.findByEmail(authentication.getName());
 
         List<Subreddit> subreddits = postService.findAllSubreddit();
 
         model.addAttribute("post", post);
+        model.addAttribute("user", user);
         model.addAttribute("subreddits", subreddits);
 
         return "create-post";
     }
 
     @PostMapping("/save-post")
-    public String savePost(@ModelAttribute("post") Post post, @RequestParam(value="file", required = false) MultipartFile file,
+    public String savePost(@ModelAttribute("post") Post post,
+                           @RequestParam(value="file", required = false) MultipartFile file,
                            @RequestParam(value="action")String action) throws IOException, SerialException, SQLException {
         if(post.getPostId() == null) {
             post.setCreatedAt(LocalDateTime.now());
@@ -89,7 +99,7 @@ public class HomeController {
 
                 Media media = new Media();
                 media.setMedia(blob);
-                media.setContentType(file.getContentType());
+                media.setContentType(file.getContentType()); // type of content
                 mediaService.create(media);
                 post.setMedia(media);
             }
@@ -128,14 +138,12 @@ public class HomeController {
 
             postService.save(existingPost);
         }
-
         if(action.equals("Update Draft")){
             return "redirect:/seeDrafts";
         }
         else if(action.equals("Update")){
             return "redirect:/"+post.getPostId();
         }
-
         return "redirect:/posts";
     }
 
@@ -150,9 +158,7 @@ public class HomeController {
         }
 
         List<Subreddit> subredditList = postService.findAllSubreddit();
-
         model.addAttribute("subredditList", subredditList);
-
         model.addAttribute("post", post);
 
         return "post-page";
@@ -169,10 +175,30 @@ public class HomeController {
     }
 
     @PostMapping("/save-subreddit")
-    public String saveSubreddit(@ModelAttribute("subreddit") Subreddit subreddit) {
+    public String saveSubreddit(@ModelAttribute("subreddit") Subreddit subreddit,
+                                @RequestParam(value="file", required = false) MultipartFile file) {
         Subreddit existingSubreddit = postService.findBySubredditName(subreddit.getName());
+
         if (existingSubreddit != null) {
             return "create-subreddit";
+        }
+
+        try{
+            if(file!=null && !file.isEmpty()) {
+                System.out.println("i am here");
+                byte[] bytes = file.getBytes();
+                Blob blob = new javax.sql.rowset.serial.SerialBlob(bytes);
+                Media media = new Media();
+                media.setMedia(blob);
+                String mediaType = file.getContentType();
+                media.setContentType(mediaType);
+                mediaService.create(media);
+                subreddit.setMedia(media);
+
+            }
+
+        }catch (Exception e){
+            System.out.println(e.getMessage());
         }
 
         subreddit.setCreatedAt(LocalDateTime.now());
@@ -210,8 +236,7 @@ public class HomeController {
         post.setIsPublished(true);
         post.setPublishedAt(LocalDateTime.now());
         postService.save(post);
-
-        return "redirect:/" + post.getPostId();
+        return "redirect:/posts";
     }
 
     @PostMapping("/delete-post/{postId}")
@@ -225,9 +250,9 @@ public class HomeController {
     public String login() {
         return "login";
     }
-
     @GetMapping("/posts/upvote/{postId}/{voteType}")
-    public String upvote(@PathVariable Integer postId, @PathVariable VoteType voteType, Model model) {
+    public String upvote(@PathVariable Integer postId, @PathVariable VoteType voteType,
+                                        Model model,@RequestParam(value = "page",required = false)String page) {
         Post post = postService.findById(postId);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findByEmail(authentication.getName());
@@ -261,11 +286,16 @@ public class HomeController {
 
         postService.save(post);
 
+        if(page!=null && page.equals("post-page")){
+            return "redirect:/"+post.getPostId();
+        }
+
         return "redirect:/posts";
     }
 
     @GetMapping("/posts/downvote/{postId}/{voteType}")
-    public String downvote(@PathVariable Integer postId, @PathVariable VoteType voteType, Model model) {
+    public String downvote(@PathVariable Integer postId, @PathVariable VoteType voteType,
+                                                Model model,@RequestParam(value = "page",required = false)String page) {
         Post post = postService.findById(postId);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findByEmail(authentication.getName());
@@ -299,6 +329,10 @@ public class HomeController {
 
         postService.save(post);
 
+        if(page!=null && page.equals("post-page")){
+            return "redirect:/"+post.getPostId();
+        }
+
         return "redirect:/posts";
     }
 
@@ -313,10 +347,17 @@ public class HomeController {
             model.addAttribute("user", user);
         }
 
+        Subreddit subreddit = subredditRepository.findBySubredditName("r/" + subredditName);
+
+        if (subredditName == null || subredditName.isEmpty()) {
+            System.out.println("Image not found");
+        }
+
         model.addAttribute("subredditList", subredditList);
         model.addAttribute("posts", posts);
-
-        return "home-page";
+        model.addAttribute("subreddit", subreddit);
+        model.addAttribute("subredditName", subredditName);
+        return "subreddit-post-display";
     }
 
     @GetMapping("/subreddit")
@@ -412,11 +453,11 @@ public class HomeController {
         return "home-page";
     }
 
-    @GetMapping("/profile")
+    @GetMapping("/profile/posts")
     public String userProfile(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findByEmail(authentication.getName());
-        List<Post> posts = user != null ? postService.findALlPostsByUserIdByOrderByVoteCountDesc(user.getUserId()) : new ArrayList<>();
+        List<Post> posts = postService.findALlPostsByUserIdByOrderByVoteCountDesc(user.getUserId()) ;
         List<Subreddit> subredditList = postService.findAllSubreddit();
 
         if (user != null) {
@@ -435,8 +476,8 @@ public class HomeController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findByEmail(authentication.getName());
         List<Comment> commentList  = user.getComments();
+        //List<Comment> commentList = user != null ? user.getComments() : new ArrayList<>();
         List<Subreddit> subredditList = postService.findAllSubreddit();
-
 
         model.addAttribute("subredditList", subredditList);
         model.addAttribute("posts", null);
@@ -468,7 +509,6 @@ public class HomeController {
         List<Post> postList = userService.findAllUpvotePostGivenByUserId(user.getUserId());
         List<Subreddit> subredditList = postService.findAllSubreddit();
 
-
         model.addAttribute("subredditList", subredditList);
         model.addAttribute("user", user);
         model.addAttribute("posts", postList);
@@ -477,8 +517,9 @@ public class HomeController {
         return "profile-page";
     }
 
-    @GetMapping("/profile/downvote/{postId}/{voteType}")
-    public String downvoteOnProfile(@PathVariable Integer postId, @PathVariable VoteType voteType, Model model) {
+    @PostMapping("/profile/downvote/{postId}/{voteType}")
+    public String downvoteOnProfile(@PathVariable Integer postId, @PathVariable VoteType voteType, Model model,
+                                        @RequestParam(value = "originalUrl", required = false)String originalUrl) {
         Post post = postService.findById(postId);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findByEmail(authentication.getName());
@@ -489,9 +530,8 @@ public class HomeController {
             if (existingVote.getVoteType() != voteType) {
                 existingVote.setVoteType(voteType);
                 postService.updateVote(existingVote);
-
                 Integer voteCount = post.getVoteCount();
-                    post.setVoteCount(voteCount - 1);
+                post.setVoteCount(voteCount - 1);
             }
         } else {
             Vote vote = new Vote();
@@ -505,15 +545,21 @@ public class HomeController {
 
         }
 
+        postService.save(post);
         model.addAttribute("voteType", voteType);
 
-        postService.save(post);
+        if(originalUrl.contains("profile/posts")) {
+            return "redirect:/profile/posts";
+        } else if(originalUrl.contains("/profile/upvote")) {
+            return "redirect:/profile/upvote";
+        }
 
         return "redirect:/profile/downvote";
     }
 
-    @GetMapping("/profile/upvote/{postId}/{voteType}")
-    public String upvoteOnProfile(@PathVariable Integer postId, @PathVariable VoteType voteType, Model model) {
+    @PostMapping("/profile/upvote/{postId}/{voteType}")
+    public String upvoteOnProfile(@PathVariable Integer postId, @PathVariable VoteType voteType, Model model,
+                                  @RequestParam(value = "originalUrl", required = false)String originalUrl) {
         Post post = postService.findById(postId);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findByEmail(authentication.getName());
@@ -542,16 +588,13 @@ public class HomeController {
 
         postService.save(post);
 
+        if(originalUrl.contains("profile/posts")) {
+            return "redirect:/profile/posts";
+        } else if(originalUrl.contains("/profile/downvote")) {
+            return "redirect:/profile/upvote";
+        }
+        
         return "redirect:/profile/upvote";
     }
 
-    @PostMapping("/publish")
-    public String publishPost(@RequestParam("postId") Integer postId) {
-        Post post = postService.findById(postId);
-        post.setIsPublished(true);
-
-        postService.save(post);
-
-        return "redirect:/posts";
-    }
 }

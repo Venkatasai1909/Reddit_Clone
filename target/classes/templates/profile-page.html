@@ -11,6 +11,17 @@
     <link rel="stylesheet" th:href="@{/css/profile.css}"/>
     <link rel="stylesheet" href="../static/css/profile.css">
     <title>Posts</title>
+    <script>
+        function toggleEditForm(commentId) {
+            var replyForm = document.getElementById("reply-comment-form-edit-" + commentId);
+            if (replyForm.style.display === "none" || replyForm.style.display === "") {
+                replyForm.style.display = "block";
+            } else {
+                replyForm.style.display = "none";
+            }
+        }
+    </script>
+
 </head>
 <body>
 <div class="nav">
@@ -23,12 +34,11 @@
         <div class="dropdown">
             <a th:href="@{/posts}" class="dropbtn">Home</a>
             <div class="dropdown-content">
-
                 <form th:action="@{/subreddit}" method="get" class="search-form">
-            <span class="material-symbols-outlined">
-                search
-                </span>
-                    <input type="text" name="subredditName" placeholder="Search subreddit">
+                     <span class="material-symbols-outlined">
+                        search
+                     </span>
+                     <input type="text" name="subredditName" placeholder="Search subreddit">
                 </form>
 
                 <div th:each="subreddit: ${subredditList}">
@@ -37,8 +47,8 @@
                 </div>
             </div>
         </div>
-
     </div>
+
     <div class="nav-item2">
         <form th:action="@{/search}" method="get" class="search-form">
             <span class="material-symbols-outlined">
@@ -67,7 +77,7 @@
             <a th:href="@{/login}">Login</a>
         </div>
 
-        <div sec:authorize="isAuthenticated()">
+        <div sec:authorize="isAuthenticated()" class="user-profile">
             <span th:text="${user.username}"></span>
 
             <a th:href="@{/updateUser}">Edit Profile</a>
@@ -77,12 +87,11 @@
                     <img height="50px" width="50px" style="border-radius:50px" th:src="@{${'/display?id=' + user.media.mediaId}}" alt="Image">
                 </div>
             </div>
-
         </div>
 
         <div sec:authorize="isAuthenticated()">
             <form th:action="@{/logout}" method="POST">
-                <input type="submit" value="Logout">
+                <input type="submit" value="Logout" class="logout-button">
             </form>
         </div>
     </div>
@@ -90,28 +99,24 @@
 
 
 <div class="user-content-box">
-
     <div class="create-box-mini">
-        <a th:href="@{/profile}">Post</a>
+        <a th:href="@{/profile/posts}">Post</a>
         <a th:href="@{/profile/comment}">Comment</a>
         <a th:href="@{/profile/upvote}">Upvote</a>
         <a th:href="@{/profile/downvote}">Downvote</a>
         <a th:href="@{/drafts}">Drafts</a>
     </div>
-
 </div>
 
 
 <div class="content-container">
-
     <div class="content">
-
         <div class="blog-container">
             <div class="card" th:each="post : ${posts}">
                 <div th:if="${post != null}">
                     <h5 th:text="${post.subreddit.name}">Author Name</h5>
-                    <h2><a th:href="@{${post.postId}}" th:text="${post.postName}">Title</a></h2>
-                    <h5 th:text="${#temporals.format(post.createdAt, 'dd/MM/yyyy, hh:mm a')}"></h5>
+                    <h2><a th:if="${post.isPublished == true}" th:href="@{${post.postId}}" th:text="${post.postName}">Title</a></h2>
+                    <h5 th:text="${#temporals.format(post.publishedAt, 'dd/MM/yyyy, hh:mm a')}"></h5>
                     <p th:text="${post.description}"></p>
 
                     <div th:if="${post.media != null}">
@@ -129,14 +134,20 @@
                     </div>
             <div th:if="${post.isPublished == true}">
                 <div class="vote">
-                    <form th:action="@{/profile/upvote/{postId}/UPVOTE(postId=${post.postId})}" method="Get">
+                    <form th:action="@{/profile/upvote/{postId}/UPVOTE(postId=${post.postId})}" method="Post">
                         <button type="submit">
+                            <input type="hidden" name="originalUrl" value="/profile/posts">
+                            <input type="hidden" name="originalUrl" value="/profile/upvote">
+                            <input type="hidden" name="originalUrl" value="/profile/downvote">
                             <span class="material-symbols-outlined">arrow_upward</span>
                         </button>
                     </form>
                     <span th:text="${post.voteCount}"></span>
-                    <form th:action="@{/profile/downvote/{postId}/DOWNVOTE(postId=${post.postId})}" method="Get">
+                    <form th:action="@{/profile/downvote/{postId}/DOWNVOTE(postId=${post.postId})}" method="Post">
                         <button type="submit">
+                            <input type="hidden" name="originalUrl" value="/profile/posts">
+                            <input type="hidden" name="originalUrl" value="/profile/upvote">
+                            <input type="hidden" name="originalUrl" value="/profile/downvote">
                             <span class="material-symbols-outlined">arrow_downward</span>
                         </button>
                     </form>
@@ -150,8 +161,8 @@
                     </form>
                 </div>
             </div>
-                <div th:if="${post.isPublished == false}">
-                    <form th:action="@{/publish}" method="Post">
+                <div th:if="${post.isPublished == false}" class="publish-container">
+                    <form th:action="@{'/posts/'+${post.postId}+'/publish'}">
                         <input type="hidden" name="postId" th:value="${post.postId}">
                         <input type="submit" value="Publish">
                     </form>
@@ -162,19 +173,27 @@
         </div>
             
     </div>
-
-    <div class="comment-box" th:if="${commentList != null}" th:each="comment: ${commentList}">
-        <div class="user-comment">
-             <h2 th:text="${comment.post.postName}">PostName</h2>
-             <br> 
-             <p th:text="${comment.content}"></p>
-              <br>
-              <div class="comment-footer">
-                <span th:text="${#temporals.format(comment.createdAt, 'dd/MM/yyyy, hh:mm a')}">2012-12-1</span>
-                <div>
-                    <a th:href="@{/}" id="edit">Edit</a>
-                    <a th:href="@{/}" id="delete">Delete</a>
-            </div>
+    <div class="comment-box">
+        <div  th:if="${commentList != null}" th:each="comment: ${commentList}">
+            <div class="user-comment">
+                 <h2 th:text="${comment.post.postName}">PostName</h2>
+                 <br>
+                 <p th:text="${comment.content}"></p>
+                  <br>
+                  <div class="comment-footer">
+                    <span th:text="${#temporals.format(comment.createdAt, 'dd/MM/yyyy, hh:mm a')}">2012-12-1</span>
+                    <div>
+                        <span><a href="#" th:attr="onclick='toggleEditForm(\'' + ${comment.commentId} + '\')'" id="edit">Edit</a></span>
+                        <div th:id="'reply-comment-form-edit-' + ${comment.commentId}" style="display: none; margin-top:7px">
+                            <form th:action="@{'/editComment/' + ${comment.commentId}}" method="post">
+                                <input  type="hidden" name="page" value="profile">
+                                <textarea id="new-comment-text-edit" name="content" th:value="${content}" th:text="${comment.content}"></textarea>
+                                <button type="submit">Save</button>
+                            </form>
+                        </div>
+                        <a th:href="@{'/profile/deleteComment/'+${comment.commentId}}" id="delete">Delete</a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

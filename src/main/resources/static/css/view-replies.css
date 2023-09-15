@@ -1,29 +1,39 @@
-
 body {
     font-family: Arial, sans-serif;
-    margin: 20px;
 }
 
+.commentList{
+width:40%;
+background-color:rgb(238,238,238);
+padding:20px;
+border-radius:5px;
+}
+.container{
+display:flex;
+justify-content:center;
+margin-top:40px;
+}
 
-strong {
+.commentList strong {
     color: #333;
     font-weight: bold;
 }
 
-span {
+.commentList span {
     color: #777;
 }
 
-div {
+.commentList div {
     margin-bottom: 10px;
 }
 
-ol {
+.commentList ol {
     list-style-type: none;
     padding: 0;
+
 }
 
-li {
+.commentList li {
     border: 1px solid #ccc;
     padding: 10px;
     margin-bottom: 15px;
@@ -31,29 +41,43 @@ li {
     background-color: #f9f9f9;
 }
 
-button {
+.commentList button {
     background-color: transparent;
     border: none;
     cursor: pointer;
 }
 
-.vote span {
+.commentList .vote span {
     margin: 0 5px;
     font-weight: bold;
 }
 
-li span a {
+.commentList li span a {
     text-decoration: none;
     color: #007bff;
     margin-right: 10px;
 }
 
-a[th:href*="/viewReplies/"] {
+.commentList a[th:href*="/viewReplies/"] {
     color: #007bff;
     text-decoration: underline;
 }
 
-a[th:href*="/replyOnComment/"] {
+.commentList a[th:href*="/replyOnComment/"] {
     color: #007bff;
     text-decoration: none;
+}
+
+.commentList .vote {
+  display: flex;
+  gap: 20px;
+}
+
+.commentList .vote button {
+  border: none;
+  background-color: inherit;
+  cursor:pointer;
+}
+.commentList .parent-comment{
+
 }

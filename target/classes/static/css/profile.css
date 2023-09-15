@@ -40,15 +40,15 @@ text-decoration: none;
 display:flex;
 justify-content:center;
 align-items: center;
-gap:5px
+gap:5px;
 }
+
 .nav-item2{
 width:40%;
 height:40px;
 }
 
 .nav-item1 select {
-
   width:67% ;
   outline: none;
   font-size: 20px;
@@ -77,20 +77,33 @@ height:40px;
 
 }
 
+
 .nav-item2 .search-form:hover,
 .nav-item2 .search-form:focus {
   outline: 1px solid black;
 }
-
 
 .nav-item3 {
   display: flex;
   text-align: center;
   align-items: center;
   justify-content: space-around;
-  width: 18%;
+  width: 30vw;
+}
+.logout-button{
+  font-size: 15px;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: #35ABF7;
+  color: white;
+  font-weight: 800;
+  cursor: pointer;
 }
 
+.nav-item3 #logout:hover{
+  background-color:dodgerblue ;
+}
 
 .auth a{
 text-decoration:none;
@@ -102,59 +115,35 @@ padding:10px;
 border-radius:5px;
 cursor: pointer;
 }
-
-.content-container{
-display:flex;
-justify-content:center;
-align-items:center;
+.comment-box{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    column-gap: 1rem;
+    position: absolute;
+    top: 7;
+    left: 10;
+    margin-top: 2rem;
 }
+.content-container{
+    display: flex;
+    justify-content: center;
+    margin-top:5px;
+}
+
 
 .content{
 width:50%;
 display:flex;
 justify-content:center;
-align-items:center;
+
 margin-top:10px;
+flex-direction:column;
 gap:20px
 }
 
 .blog-container{
 width:80%;
-display:flex;
-flex-direction:column;
-
 }
-.create{
-display:flex;
-flex-direction:column;
-border-radius:2px;
-background-color: white;
-height: 100px;
-width:300px;
-justify-content:center;
-align-items:center;
-gap:5px
-}
-.create a{
-text-decoration:none;
-text-align: center;
-width:80%;
-color:white;
-border-radius:13px;
-font-weight:900;
-padding:10px;
-cursor: pointer;
-}
-.create #create{
-
-  background-color: #2E86C1;
-}
-
-.create #create-community{
-border:1px solid #2E86C1;
-color: #2E86C1;
-}
-
 
 
 
@@ -234,6 +223,7 @@ color: #2E86C1;
   align-items: center;
   text-align: center;
   background-color: white;
+  margin-top:2px;
   }
 
 .user-content-box .create-box-mini{
@@ -247,14 +237,14 @@ color: #2E86C1;
 
 .user-content-box .create-box-mini a{
   cursor: pointer;
-  color: #2E86C1;
+  color: black;
   padding: 10px;
   border-radius: 5px;
+  text-decoration: none;
 }
 
 .user-content-box .create-box-mini a:hover{
-    background-color: #ECF0F1;
-   
+       background-color: #35ABF7;
 }
 
 auth a{
@@ -268,57 +258,54 @@ auth a{
   cursor: pointer;
   }
   
-  .content-container{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  }
-  
-  .content{
-  width:50%;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  margin-top:10px;
-  gap:20px
-  }
-  
-  .blog-container{
-  width:80%;
-  display:flex;
-  flex-direction:column;
-  
-  }
-  .create{
-  display:flex;
-  flex-direction:column;
-  border-radius:2px;
-  background-color: white;
-  height: 100px;
-  width:300px;
-  justify-content:center;
-  align-items:center;
-  gap:5px
-  }
-  .create a{
-  text-decoration:none;
-  text-align: center;
-  width:80%;
-  color:white;
-  border-radius:13px;
-  font-weight:900;
-  padding:10px;
-  cursor: pointer;
-  }
-  .create #create{
-  
-    background-color: #2E86C1;
-  }
-  
-  .create #create-community{
-  border:1px solid #2E86C1;
-  color: #2E86C1;
-  }
+
+
+
+
+ .card {
+     background-color: white;
+     margin-top: 10px;
+     padding: 15px;
+     border-radius: 2px;
+     outline: 1px solid white;
+     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+     margin-bottom: 20px;
+ }
+
+
+ .user-comment {
+      background-color:#ECF0F1;
+           padding: 10px;
+           margin: 10px auto;
+           border-radius: 10px;
+           max-width: 600px;
+ }
+
+
+ .user-comment + .user-comment {
+     margin-top: 20px;
+ }
+
+
+ .comment-footer {
+     display: flex;
+     justify-content: space-between;
+     align-items: center;
+     font-size: 14px;
+     color: #555;
+ }
+
+
+ .comment-footer a {
+     text-decoration: none;
+     margin-left: 10px;
+     color: #2E86C1;
+ }
+
+
+ .comment-footer span {
+     color: #999;
+ }
 
 .vote{
   display:flex;
@@ -327,8 +314,9 @@ auth a{
   .vote button{
   border :none;
   background-color: inherit;
+  cursor:pointer;
   }
-  
+
   .card{
    background-color: white;
    margin-top:10px;
@@ -336,11 +324,11 @@ auth a{
    border-radius:2px;
    outline:1px solid white;
   }
-  
+
   .card:hover{
   outline:1px solid grey;
   }
-  
+
   h2 a{
   text-decoration:none;
   }
@@ -348,47 +336,32 @@ auth a{
   .red{
   color:red;
   }
-  
+
   .blue{
   color:blue;
   }
-
-  .comment-box{
-      width: 100%;
-      display:flex;
-      flex-direction:column;
-    }
-
-    .comment-box .user-comment{
-      background-color:#ECF0F1;
-      padding: 10px;
-      margin: 10px auto;
-      border-radius: 10px;
-      max-width: 600px;
-    }
-
-    .comment-box .user-comment:hover{
-      background-color: white;
-    }
-
-    .comment-box .user-comment h2{
-      color: #2E86C1;
-
-    }
-
-    .comment-box .user-comment .comment-footer{
-
-      display: flex;
-      justify-content: space-between;
-    }
-
-    .comment-box .user-comment .comment-footer #edit{
+  .comment-box .user-comment .comment-footer #edit{
       cursor: pointer;
       color:white;
       background-color: dodgerblue;
       padding: 5px;
       border-radius: 5px;
       text-decoration: none;
+    }
+
+   .comment-box .user-comment .comment-footer button[type="submit"] {
+      background-color: #4CAF50; /* Background color */
+      color: white; /* Text color */
+      padding: 5px; /* Padding */
+       border: none; /*Remove border */
+      border-radius: 5px; /* Rounded corners */
+      cursor: pointer; /* Cursor style on hover */
+      font-size: 12px; /* Text size */
+    }
+
+    /* Hover effect */
+   .comment-box .user-comment .comment-footer button[type="submit"]:hover {
+      background-color: #45a049; /* Darker background color on hover */
     }
 
     .comment-box .user-comment .comment-footer #delete{
@@ -399,17 +372,44 @@ auth a{
       border-radius: 5px;
       text-decoration: none;
     }
+.user-profile {
+    width:20rem;
+    display:flex;
+    justify-content:space-around;
+    align-items:center;
+}
 
-    .user-comment {
-        margin-bottom: 20px;
-        border: 1px solid #ccc;
-        padding: 10px;
-    }
+.user-profile a {
+    text-decoration:none;
+    border:1px solid;
+    padding:0.6rem;
+    color:white;
+    background-color:#35ABF7;
+    border-radius:0.5rem;
+}
+
+/* Style for the publish container */
+.publish-container {
+  margin: 10px;
+  padding: 10px;
+  display:flex;
+  justify-content:center;
+}
 
 
-    .user-comment h2 {
-        font-size: 18px;
-        font-weight: bold;
-        margin-bottom: 5px;
-    }
 
+/* Style for the submit button within the form */
+.publish-container input[type="submit"] {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+/* Style for the submit button on hover within the form */
+.publish-container input[type="submit"]:hover {
+  background-color: #0056b3;
+}

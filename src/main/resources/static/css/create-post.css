@@ -1,13 +1,28 @@
-
 body {
     font-family: Arial, sans-serif;
-    background-color: #f5f5f5;
     margin: 0;
     padding: 0;
 }
+* {
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+  font-family: sans-serif;
+}
 
-
-form {
+.form-container{
+display:flex;
+justify-content:center;
+align-items:center;
+margin-top:10vh;
+}
+.form{
+width:40%;
+background-color:white;
+padding:20px;
+ box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+}
+.form form {
     max-width: 600px;
     margin: 0 auto;
     padding: 20px;
@@ -17,20 +32,20 @@ form {
 }
 
 
-h1 {
+.form h1 {
     font-size: 24px;
     margin-bottom: 20px;
 }
 
 
-label {
+.form label {
     font-weight: bold;
 }
 
 
-input[type="text"],
-input[type="file"],
-textarea {
+.form input[type="text"],
+.form input[type="file"],
+.form textarea {
     width: 100%;
     padding: 10px;
     margin-bottom: 10px;
@@ -40,7 +55,7 @@ textarea {
 }
 
 
-input[type="submit"] {
+.form input[type="submit"] {
     background-color: #007bff;
     color: #fff;
     border: none;
@@ -51,21 +66,21 @@ input[type="submit"] {
 }
 
 
-input[readonly] {
+.form input[readonly] {
     background-color: #eee;
     cursor: not-allowed;
 }
 
 
-img,
-video {
+.form img,
+.form video {
     max-width: 100%;
     height: auto;
     margin-top: 10px;
 }
 
 
-select {
+.form select {
     width: 100%;
     padding: 10px;
     margin-bottom: 10px;
@@ -75,10 +90,30 @@ select {
 }
 
 
-input[type="hidden"] {
+.form input[type="hidden"] {
     display: none;
 }
 
-div {
+.form div {
     margin-bottom: 20px;
+}
+.nav-item2 input {
+  width: 100%;
+  padding: 5px;
+  border: none;
+  background-color: #ECF0F1;
+  font-size: 13px;
+  outline: none;
+}
+
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: -5px 20px;
+  border-bottom: .1px solid black;
+  position: sticky;
+  top: 0;
+  background-color: white;
+  z-index: 100;
 }

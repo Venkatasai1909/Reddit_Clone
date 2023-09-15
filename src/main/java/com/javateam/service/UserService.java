@@ -7,6 +7,7 @@ import com.javateam.model.VoteType;
 import com.javateam.repository.UserRepository;
 import com.javateam.repository.VoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -48,7 +49,6 @@ public class UserService {
         votes.forEach(vote -> {
             postList.add(vote.getPost());
         });
-        System.out.println(postList.size());
 
         return postList;
     }
@@ -61,6 +61,11 @@ public class UserService {
         });
 
         return postList;
+    }
+
+    public User findByUsernameAndPassword(String username, String password) {
+        User user = userRepository.findByUsernameAndPassword(username,password);
+        return user;
     }
 
 }

@@ -9,7 +9,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -89,7 +92,8 @@ public class CommentController {
     }
 
     @GetMapping("/editComment/{commentId}")
-    public String editComment(@PathVariable Integer commentId, Model model) {
+    public String editComment(@PathVariable Integer commentId,
+                              Model model) {
         Comment comment = commentService.getCommentById(commentId);
         model.addAttribute("comment", comment);
 
@@ -97,13 +101,16 @@ public class CommentController {
     }
 
     @PostMapping("/editComment/{commentId}")
-    public String saveEditedComment(
-            @PathVariable Integer commentId,
-            Comment comment
-    ) {
+    public String saveEditedComment(@PathVariable Integer commentId,
+                                    @RequestParam(value = "content")String content,
+                                    @RequestParam(value = "page", required = false)String page) {
         Comment existingComment = commentService.getCommentById(commentId);
-        existingComment.setContent(comment.getContent());
+        existingComment.setContent(content);
         commentService.saveComment(existingComment);
+
+        if(page != null && page.equals("profile")) {
+            return "redirect:/profile/comment";
+        }
 
         return "redirect:/" + existingComment.getPost().getPostId();
     }
@@ -115,12 +122,26 @@ public class CommentController {
         return "redirect:/" + comment.getPost().getPostId();
     }
 
+    @GetMapping("/profile/cancelEdit/{commentId}")
+    public String cancelProfileEdit(@PathVariable Integer commentId) {
+        Comment comment = commentService.getCommentById(commentId);
+
+        return "redirect:/profile/comment";
+    }
+
     @GetMapping("/deleteComment/{commentId}")
     public String deleteComment(@PathVariable Integer commentId) {
         Comment comment = commentService.getCommentById(commentId);
         commentService.deleteCommentById(commentId);
 
         return "redirect:/" + comment.getPost().getPostId();
+    }
+    @GetMapping("/profile/deleteComment/{commentId}")
+    public String deleteProfileComment(@PathVariable Integer commentId) {
+        Comment comment = commentService.getCommentById(commentId);
+        commentService.deleteCommentById(commentId);
+
+        return "redirect:/profile/comment";
     }
     @GetMapping("/comments/upvote/{commentId}/{voteType}")
     public String upvote(@PathVariable Integer commentId, @PathVariable VoteType voteType, Model model) {

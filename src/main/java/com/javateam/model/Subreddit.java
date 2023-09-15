@@ -17,6 +17,17 @@ public class Subreddit {
     @OneToMany(mappedBy = "subreddit", cascade = {CascadeType.REMOVE})
     private List<Post> posts;
     private LocalDateTime createdAt;
+    @OneToOne(cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
+    @JoinColumn(name="media_id")
+    private Media media;
+
+    public Media getMedia() {
+        return media;
+    }
+
+    public void setMedia(Media media) {
+        this.media = media;
+    }
 
     public Integer getSubredditId() {
         return subredditId;

@@ -13,6 +13,16 @@ public class Media {
     private String contentType;
     @OneToOne(mappedBy = "media")
     private Post post;
+    @OneToOne(mappedBy = "media")
+    private Subreddit subreddit;
+
+    public Subreddit getSubreddit() {
+        return subreddit;
+    }
+
+    public void setSubreddit(Subreddit subreddit) {
+        this.subreddit = subreddit;
+    }
 
     public Integer getMediaId() {
         return mediaId;
@@ -45,5 +55,6 @@ public class Media {
     public void setPost(Post post) {
         this.post = post;
     }
+
 
 }

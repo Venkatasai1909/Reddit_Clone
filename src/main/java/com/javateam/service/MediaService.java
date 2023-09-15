@@ -8,8 +8,11 @@ import java.util.List;
 
 @Service
 public class MediaService {
-    @Autowired
     private MediaRepository mediaRepository;
+    @Autowired
+    public MediaService(MediaRepository mediaRepository) {
+        this.mediaRepository = mediaRepository;
+    }
 
     public Media create(Media media) {
         return mediaRepository.save(media);

@@ -13,6 +13,7 @@
     <title>Posts</title>
 </head>
 <body>
+    
 <div class="nav">
     <div class="nav-item1">
         <div class="logo">
@@ -20,21 +21,36 @@
             <strong>reddit</strong>
         </div>
 
-        <div class="dropdown">
-            <a th:href="@{/posts}" class="dropbtn">Home</a>
-            <div class="dropdown-content">
+        <div class="dropdown" >
+            <div style="align-items:center;
+                        text-align:center;
+                        display:flex;
+                        border:1px solid #BDC3C7 ;
+                        padding:3px 2px; width:190px;
+                        justify-content:space-between;
+                        cursor:pointer;">
+            <a  th:href="@{/posts}" class="dropbtn">Home </a>
+                <span class="material-symbols-outlined">stat_minus_1</span>
+            </div>
+                <div class="dropdown-content">
 
                 <form th:action="@{/subreddit}" method="get" class="search-form">
-            <span class="material-symbols-outlined">
-                search
-                </span>
+                <span class="material-symbols-outlined">search</span>
                     <input type="text" name="subredditName" placeholder="Search subreddit">
                 </form>
 
-                <div th:each="subreddit: ${subredditList}">
-                    <a th:if="${subreddit.name != null}" th:href="@{'/subreddit/r/'+ ${#strings.substring(subreddit.name, 2)}}"
-                       th:text="${subreddit.name}">
-                     </a>
+                    <a id="create-community-box" th:href="@{/create-community}"><span class="material-symbols-outlined">add</span> <p>Create Community</p></a>
+
+                <div class="select-box" th:each="subreddit: ${subredditList}">
+
+                    <div class="option">
+                        <img th:if="${ subreddit != null && subreddit.media != null}"   th:src="@{${'/display?id=' + subreddit.media.mediaId}}" alt="Image">
+                        <a th:if="${subreddit.name != null}" th:href="@{'/subreddit/r/'+ ${#strings.substring(subreddit.name, 2)}}"
+                           th:text="${subreddit.name}">
+                        </a>
+                        <span class="material-symbols-outlined">star</span>
+                    </div>
+
                 </div>
 
             </div>
@@ -62,8 +78,8 @@
             </span>
         </a>
         <div class="user-box" sec:authorize="isAuthenticated()">
-           <a class="add" th:href="@{/profile}"><span th:if="${user != null}" th:text="${user.username}">bob</span></a>
-           &nbsp
+           <a class="add" th:href="@{/profile/posts}"><span th:if="${user != null}" th:text="${user.username}"></span></a>
+           &nbsp;  
            <div th:if="${user != null && user.media != null}">
                 <div class="user-image" th:if="${user.media.contentType.startsWith('image/')}">
                     <img  th:src="@{${'/display?id=' + user.media.mediaId}}" alt="Image">
@@ -76,7 +92,7 @@
 
         </div>
         <div sec:authorize="isAnonymous()" class="auth">
-            <a th:href="@{/register}">Register</a>
+            <a th:href="@{/register}">Sing Up</a>
             <a th:href="@{/login}" id="login-button">Login</a>
         </div>
         <div sec:authorize="isAuthenticated()" >
@@ -92,11 +108,13 @@
         <div class="blog-container">
 
             <div class="create-post">
+
                 <div sec:authorize="isAnonymous()">
-                    <img src="https://www.redditinc.com/assets/images/site/reddit-logo.png">
+                    <img height="50px" width="50px" src="https://www.redditinc.com/assets/images/site/reddit-logo.png">
                 </div>
+
                 <div sec:authorize="isAuthenticated()">
-                    <div th:if="${user.media != null}">
+                    <div th:if="${user != null && user.media != null}">
                         <div th:if="${user.media.contentType.startsWith('image/')}">
                             <img height="50px" width="50px" th:src="@{${'/display?id=' + user.media.mediaId}}" alt="Image">
                         </div>
@@ -148,8 +166,12 @@
             <div class="card" th:each="post : ${posts}">
                 <h5 th:text="${post.subreddit.name}">Author Name</h5>
                 <h2><a th:href="@{${post.postId}}" th:text="${post.postName}">Title</a></h2>
-                <h5 th:text="${#temporals.format(post.createdAt, 'dd/MM/yyyy, hh:mm a')}"></h5>
+                 <h5 th:text="${#temporals.format(post.publishedAt, 'dd/MM/yyyy, hh:mm a')}"></h5>
                 <p th:text="${post.description}"></p>
+                <a th:if="${#strings.startsWith(post.url, 'http://') or #strings.startsWith(post.url, 'https://')}" th:href="${post.url}" target="_blank">
+                    <span th:text="${post.url}"></span>
+                </a>
+
 
                 <div th:if="${post.media != null}">
                     <div th:if="${post.media.contentType.startsWith('image/')}">
@@ -166,15 +188,13 @@
                 </div>
 
                 <div class="vote">
-                    <form th:if="${voteType == null || voteType == 'DOWNVOTE'}"
-                          th:action="@{/posts/upvote/{postId}/UPVOTE(postId=${post.postId})}" method="Get">
+                    <form th:action="@{/posts/upvote/{postId}/UPVOTE(postId=${post.postId})}" method="Get">
                         <button type="submit">
                             <span class="material-symbols-outlined">arrow_upward</span>
                         </button>
                     </form>
                     <span th:text="${post.voteCount}"></span>
-                    <form th:if="${voteType == null || voteType == 'UPVOTE'}"
-                          th:action="@{/posts/downvote/{postId}/DOWNVOTE(postId=${post.postId})}" method="Get">
+                    <form th:action="@{/posts/downvote/{postId}/DOWNVOTE(postId=${post.postId})}" method="Get">
                         <button type="submit">
                             <span class="material-symbols-outlined">arrow_downward</span>
                         </button>
