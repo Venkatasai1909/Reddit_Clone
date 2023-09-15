@@ -42,6 +42,11 @@ public class HomeController {
         this.subredditRepository = subredditRepository;
     }
 
+    @GetMapping("/")
+    public String getPosts(){
+        return "redirect:/posts";
+    }
+
     @GetMapping("/posts")
     public String getAllPosts(Model model) {
         List<Post> posts = postService.findAll();
