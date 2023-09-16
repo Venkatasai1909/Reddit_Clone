@@ -280,7 +280,7 @@ public class HomeController {
             post.setVoteCount(voteCount + 1);
         }
 
-        if (post.getVoteCount() % 10 == 0) {
+        if (post.getVoteCount() % 3 == 0) {
             Integer karma = post.getUser().getKarma();
             karma = karma + 1;
             post.getUser().setKarma(karma);
@@ -323,7 +323,7 @@ public class HomeController {
             post.setVoteCount(voteCount - 1);
         }
 
-        if (post.getUser().getKarma() > 0 && post.getVoteCount() % 10 == 0) {
+        if (post.getUser().getKarma() > 0 && post.getVoteCount() % 3 == 0) {
             Integer karma = post.getUser().getKarma();
             karma = karma - 1;
             post.getUser().setKarma(karma);
