@@ -166,7 +166,8 @@
             <div class="card" th:each="post : ${posts}">
                 <h5 th:text="${post.subreddit.name}">Author Name</h5>
                 <h2><a th:href="@{${post.postId}}" th:text="${post.postName}">Title</a></h2>
-                 <h5 th:text="${#temporals.format(post.publishedAt, 'dd/MM/yyyy, hh:mm a')}"></h5>
+                <div th:text="${post.user.username}"></div>
+                <h5 th:datetime="${post.publishedAt}" th:utext="${#temporals.format(post.publishedAt, 'dd/MM/yyyy, hh:mm a')}"></h5>
                 <p th:text="${post.description}"></p>
                 <a th:if="${#strings.startsWith(post.url, 'http://') or #strings.startsWith(post.url, 'https://')}" th:href="${post.url}" target="_blank">
                     <span th:text="${post.url}"></span>

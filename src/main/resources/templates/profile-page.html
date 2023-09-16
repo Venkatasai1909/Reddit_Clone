@@ -136,18 +136,12 @@
                 <div class="vote">
                     <form th:action="@{/profile/upvote/{postId}/UPVOTE(postId=${post.postId})}" method="Post">
                         <button type="submit">
-                            <input type="hidden" name="originalUrl" value="/profile/posts">
-                            <input type="hidden" name="originalUrl" value="/profile/upvote">
-                            <input type="hidden" name="originalUrl" value="/profile/downvote">
                             <span class="material-symbols-outlined">arrow_upward</span>
                         </button>
                     </form>
                     <span th:text="${post.voteCount}"></span>
                     <form th:action="@{/profile/downvote/{postId}/DOWNVOTE(postId=${post.postId})}" method="Post">
                         <button type="submit">
-                            <input type="hidden" name="originalUrl" value="/profile/posts">
-                            <input type="hidden" name="originalUrl" value="/profile/upvote">
-                            <input type="hidden" name="originalUrl" value="/profile/downvote">
                             <span class="material-symbols-outlined">arrow_downward</span>
                         </button>
                     </form>
@@ -163,8 +157,14 @@
             </div>
                 <div th:if="${post.isPublished == false}" class="publish-container">
                     <form th:action="@{'/posts/'+${post.postId}+'/publish'}">
-                        <input type="hidden" name="postId" th:value="${post.postId}">
+<!--                        <input type="hidden" name="postId" th:value="${post.postId}">-->
                         <input type="submit" value="Publish">
+                    </form>
+                    <form th:action="@{'/update-post/' + ${post.postId}}" method="POST">
+                        <input type="submit" value="Edit">
+                    </form>
+                    <form th:action="@{'/delete-post/' + ${post.postId}}" method="POST">
+                        <input type="submit" value="Delete">
                     </form>
                 </div>
             </div>

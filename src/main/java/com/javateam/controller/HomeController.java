@@ -99,7 +99,7 @@ public class HomeController {
 
                 Media media = new Media();
                 media.setMedia(blob);
-                media.setContentType(file.getContentType()); // type of content
+                media.setContentType(file.getContentType());
                 mediaService.create(media);
                 post.setMedia(media);
             }
@@ -138,8 +138,12 @@ public class HomeController {
 
             postService.save(existingPost);
         }
+        if(action.equals("Draft")) {
+            return "redirect:/drafts";
+        }
+
         if(action.equals("Update Draft")){
-            return "redirect:/seeDrafts";
+            return "redirect:/drafts";
         }
         else if(action.equals("Update")){
             return "redirect:/"+post.getPostId();
@@ -518,8 +522,7 @@ public class HomeController {
     }
 
     @PostMapping("/profile/downvote/{postId}/{voteType}")
-    public String downvoteOnProfile(@PathVariable Integer postId, @PathVariable VoteType voteType, Model model,
-                                        @RequestParam(value = "originalUrl", required = false)String originalUrl) {
+    public String downvoteOnProfile(@PathVariable Integer postId, @PathVariable VoteType voteType, Model model){
         Post post = postService.findById(postId);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findByEmail(authentication.getName());
@@ -548,18 +551,12 @@ public class HomeController {
         postService.save(post);
         model.addAttribute("voteType", voteType);
 
-        if(originalUrl.contains("/profile/posts")) {
-            return "redirect:/profile/posts";
-        } else if(originalUrl.contains("/profile/upvote")) {
-            return "redirect:/profile/upvote";
-        }
 
         return "redirect:/profile/downvote";
     }
 
     @PostMapping("/profile/upvote/{postId}/{voteType}")
-    public String upvoteOnProfile(@PathVariable Integer postId, @PathVariable VoteType voteType, Model model,
-                                  @RequestParam(value = "originalUrl", required = false)String originalUrl) {
+    public String upvoteOnProfile(@PathVariable Integer postId, @PathVariable VoteType voteType, Model model) {
         Post post = postService.findById(postId);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findByEmail(authentication.getName());
@@ -587,12 +584,6 @@ public class HomeController {
         model.addAttribute("voteType", voteType);
 
         postService.save(post);
-
-        if(originalUrl.contains("/profile/posts")) {
-            return "redirect:/profile/posts";
-        } else if(originalUrl.contains("/profile/downvote")) {
-            return "redirect:/profile/upvote";
-        }
         
         return "redirect:/profile/upvote";
     }

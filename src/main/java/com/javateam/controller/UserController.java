@@ -75,66 +75,6 @@ public class UserController {
         return "update-user";
     }
 
-//    @PostMapping("/updateUser")
-//    public String saveUpdatedUser(@ModelAttribute("user") User updatedUser,
-//                                  @RequestParam(value = "email") String email,
-//                                  @RequestParam(value="file", required = false) MultipartFile file)
-//                                                        throws IOException, SerialException, SQLException {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        User existingUser = userService.findByEmail(authentication.getName());
-//        if(!email.equals(authentication.getName())) {
-//            return  "update-user";
-//        } else {
-//            return "redirect:/posts";
-//        }
-////        System.out.println(updatedUser.getPassword());
-////        String bcryptupdatedPassword = passwordEncoder.encode(updatedUser.getPassword());
-////        User user = userService.findByUsernameAndPassword(updatedUser.getUsername(),bcryptupdatedPassword);
-////        if(user == null) {
-////            return "update-user";
-////        }
-////
-////        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-////        User existingUser = userService.findByEmail(authentication.getName());
-////        System.out.println(existingUser.getPassword());
-////        existingUser.setUsername(updatedUser.getUsername().trim());
-////
-//////        if(updatedUser.getPassword()!=null && !updatedUser.getPassword().isEmpty()){
-//////            String bcryptPassword = passwordEncoder.encode(updatedUser.getPassword());
-//////            existingUser.setPassword(bcryptPassword);
-//////        }
-////        String bcryptPassword = passwordEncoder.encode(password);
-////        existingUser.setPassword(bcryptPassword);
-//
-////        System.out.println(existingUser.getPassword());
-////        System.out.println(updatedUser.getPassword());
-////        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-////       if(!passwordEncoder.matches(existingUser.getPassword(),passwordEncoder.encode(updatedUser.getPassword()))) {
-////           return "update-user";
-////       } else {
-////
-////       }
-//
-////        if(file!=null && !file.isEmpty()) {
-////            byte[] bytes = file.getBytes();
-////            Blob blob = new SerialBlob(bytes);
-////
-////            if (existingUser.getMedia() != null) {
-////                existingUser.getMedia().setMedia(blob);
-////                existingUser.getMedia().setContentType(file.getContentType());
-////                mediaService.create(existingUser.getMedia());
-////            } else {
-////                Media media = new Media();
-////                media.setMedia(blob);
-////                media.setContentType(file.getContentType());
-////                mediaService.create(media);
-////                existingUser.setMedia(media);
-////            }
-////        }
-////        userService.saveUser(existingUser);
-////
-////        return "redirect:/posts";
-//    }
     @PostMapping("/updateUser")
     public String saveUpdatedUser(@ModelAttribute("user") User updatedUser,
                                   @RequestParam(value="email")String email,

@@ -12,6 +12,16 @@
 
     <link rel="stylesheet" href="../static//css/update-user.css">
     <link rel="stylesheet" th:href="@{/css/update-user.css}">
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          const passwordField = document.getElementById("password");
+            if(passwordField.value.length<8){
+              alert("Passwords length should be greater than or equal to eight !");
+              event.preventDefault();
+            }
+          });
+        });
+    </script>
 </head>
 <body>
 
