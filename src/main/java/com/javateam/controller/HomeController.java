@@ -42,11 +42,6 @@ public class HomeController {
         this.subredditRepository = subredditRepository;
     }
 
-//    @GetMapping("/")
-//    public String getPosts(Model model){
-//        return getAllPosts(model);
-//    }
-
     @GetMapping({"/","/posts"})
     public String getAllPosts(Model model) {
         List<Post> posts = postService.findAll();
@@ -553,7 +548,7 @@ public class HomeController {
         postService.save(post);
         model.addAttribute("voteType", voteType);
 
-        if(originalUrl.contains("profile/posts")) {
+        if(originalUrl.contains("/profile/posts")) {
             return "redirect:/profile/posts";
         } else if(originalUrl.contains("/profile/upvote")) {
             return "redirect:/profile/upvote";
@@ -593,7 +588,7 @@ public class HomeController {
 
         postService.save(post);
 
-        if(originalUrl.contains("profile/posts")) {
+        if(originalUrl.contains("/profile/posts")) {
             return "redirect:/profile/posts";
         } else if(originalUrl.contains("/profile/downvote")) {
             return "redirect:/profile/upvote";

@@ -82,7 +82,7 @@
             </span>
     </a>
     <div class="user-box" sec:authorize="isAuthenticated()">
-      <a class="add" th:href="@{/profile}"><span th:if="${user != null}" th:text="${user.username}">bob</span></a>
+      <a class="add" th:href="@{/profile/posts}"><span th:if="${user != null}" th:text="${user.username}">bob</span></a>
       &nbsp
       <div th:if="${user != null && user.media != null}">
         <div class="user-image" th:if="${user.media.contentType.startsWith('image/')}">
