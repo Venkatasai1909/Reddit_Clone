@@ -1,9 +1,6 @@
 package com.javateam.service;
 
-import com.javateam.model.Post;
-import com.javateam.model.User;
-import com.javateam.model.Vote;
-import com.javateam.model.VoteType;
+import com.javateam.model.*;
 import com.javateam.repository.UserRepository;
 import com.javateam.repository.VoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class UserService {
@@ -66,6 +64,12 @@ public class UserService {
     public User findByUsernameAndPassword(String username, String password) {
         User user = userRepository.findByUsernameAndPassword(username,password);
         return user;
+    }
+
+    public List<Post> findAllPostsBySubreddit(Set<Subreddit> subreddits) {
+        List<Post> posts = userRepository.findPostsBySubreddits(subreddits);
+
+        return posts;
     }
 
 }

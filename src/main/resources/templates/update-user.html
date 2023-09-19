@@ -94,7 +94,7 @@
                 </span>
             </a>
             <div class="user-box" sec:authorize="isAuthenticated()">
-                <a class="add" th:href="@{/profile/posts}"><span th:if="${user != null}" th:text="${user.username}"></span></a>
+                <a class="add" th:href="@{/profile}"><span th:if="${user != null}" th:text="${user.username}"></span></a>
                &nbsp;  
              
                 <p>Karma:<span th:if="${user != null}" th:text="${user.karma}"></span></p>

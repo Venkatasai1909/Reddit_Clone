@@ -4,12 +4,21 @@
   <meta charset="UTF-8">
   <title>Create Subreddit</title>
   <link rel="stylesheet" th:href="@{/css/create-subreddit.css}"/>
+  <script>
+    function addPrefix(input) {
+        // Check if the input value doesn't start with "r/". If not, prepend it.
+        if (!input.value.startsWith("r/")) {
+            input.value = "r/" + input.value;
+        }
+    }
+</script>
 </head>
 <body>
 <div class="container">
   <form th:action="@{/save-subreddit}" method="post" th:object="${subreddit}" enctype="multipart/form-data">
     <label for="name">Name:</label>
-    <input type="text" id="name" name="name" th:field="*{name}" required>
+    <input type="text" id="name" name="name" th:field="*{name}" placeholder="r/" oninput="addPrefix(this);" required>
+
     <label for="file">Choose icon </label>
     <input type="file" id="file" th:name="file" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
     <br>

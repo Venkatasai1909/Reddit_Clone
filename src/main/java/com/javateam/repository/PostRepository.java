@@ -26,11 +26,6 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     @Query("SELECT post FROM Post post WHERE post.user.userId = :userId AND post.isPublished = false")
     List<Post> findAllDraftPostsOfUser(@Param("userId")Integer userId);
 
-//    @Query("SELECT p FROM Post p WHERE isPublished = true ORDER BY ((p.voteCount - 1) /" +
-//            " POW(((EXTRACT(EPOCH FROM NOW()) - EXTRACT(EPOCH FROM p.publishedAt)) / 3600) + 2, 1.8)) DESC, " +
-//            "p.publishedAt ASC")
-//    List<Post> findHotPosts();
-
     @Query("SELECT p FROM Post p WHERE isPublished = true ORDER BY ((p.voteCount - 1) /" +
             " POW(((EXTRACT(EPOCH FROM NOW()) - EXTRACT(EPOCH FROM p.publishedAt)) / 3600) + 2, 1.8)) DESC, " +
             "p.publishedAt ASC")

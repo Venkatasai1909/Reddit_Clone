@@ -5,6 +5,7 @@ import com.javateam.model.Subreddit;
 import com.javateam.model.User;
 import com.javateam.service.MediaService;
 import com.javateam.service.PostService;
+import com.javateam.service.SubredditService;
 import com.javateam.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -33,12 +34,15 @@ public class UserController {
     private PasswordEncoder passwordEncoder;
     private PostService postService;
     private MediaService mediaService;
+    private SubredditService subredditService;
     @Autowired
-    public UserController(UserService userService, PasswordEncoder passwordEncoder, MediaService mediaService, PostService postService) {
+    public UserController(UserService userService, PasswordEncoder passwordEncoder,
+                            MediaService mediaService, PostService postService, SubredditService subredditService) {
         this.userService = userService;
         this.mediaService = mediaService;
         this.passwordEncoder = passwordEncoder;
         this.postService = postService;
+        this.subredditService = subredditService;
     }
 
     @GetMapping("/register")
@@ -70,7 +74,7 @@ public class UserController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findByEmail(authentication.getName());
         model.addAttribute("user",user);
-        List<Subreddit> subreddits = postService.findAllSubreddit();
+        List<Subreddit> subreddits = subredditService.findAllSubreddit();
         model.addAttribute("subreddits", subreddits);
         return "update-user";
     }

@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
+
 @Entity
 @Table(name="users")
 public class User {
@@ -25,21 +27,24 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = {CascadeType.REMOVE, CascadeType.MERGE})
     private List<Vote> votes;
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "media_id")
+    private Media media;
 
-    public List<Vote> getVotes() {
-        return votes;
+    @ManyToMany(cascade = {CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REMOVE, CascadeType.DETACH})
+    @JoinTable(name = "user_subreddit",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "subreddit_id"))
+    private Set<Subreddit> joinedSubreddits;
+    @OneToMany(mappedBy = "user")
+    private List<Notification> notifications;
+
+    public List<Notification> getNotifications() {
+        return notifications;
     }
 
-    public void setVote(List<Vote> votes) {
-        this.votes = votes;
-    }
-
-    public List<Comment> getComments() {
-        return comments;
-    }
-
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
+    public void setNotifications(List<Notification> notifications) {
+        this.notifications = notifications;
     }
 
     public Integer getUserId() {
@@ -90,6 +95,14 @@ public class User {
         this.enabled = enabled;
     }
 
+    public Integer getKarma() {
+        return karma;
+    }
+
+    public void setKarma(Integer karma) {
+        this.karma = karma;
+    }
+
     public List<Post> getPosts() {
         return posts;
     }
@@ -106,6 +119,22 @@ public class User {
         this.subreddits = subreddits;
     }
 
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+
+    public List<Vote> getVotes() {
+        return votes;
+    }
+
+    public void setVotes(List<Vote> votes) {
+        this.votes = votes;
+    }
+
     public Media getMedia() {
         return media;
     }
@@ -114,17 +143,12 @@ public class User {
         this.media = media;
     }
 
-    public Integer getKarma() {
-        return karma;
+    public Set<Subreddit> getJoinedSubreddits() {
+        return joinedSubreddits;
     }
 
-    public void setKarma(Integer karma) {
-        this.karma = karma;
+    public void setJoinedSubreddits(Set<Subreddit> joinedSubreddits) {
+        this.joinedSubreddits = joinedSubreddits;
     }
-
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "media_id")
-    private Media media;
-
 
 }

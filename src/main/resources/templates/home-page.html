@@ -11,6 +11,41 @@
     <link rel="stylesheet" th:href="@{/css/home.css}"/>
     <link rel="stylesheet" href="../static/css/home.css">
     <title>Posts</title>
+    <script>
+    function showJoinModal(event, subredditId) {
+        event.preventDefault(); // Prevent the form from submitting normally
+
+        // Show the modal
+        const modal = document.getElementById(`joinModal-${subredditId}`);
+        modal.style.display = "block";
+
+        // Submit the form asynchronously (AJAX)
+        fetch("/join-community", {
+            method: "POST",
+            body: new FormData(document.getElementById(`join-form-${subredditId}`)),
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.success) {
+                    // Update the modal content or take any additional actions if needed
+                } else {
+                    // Handle the error or show a message to the user
+                    console.error("Failed to join the community.");
+                }
+            })
+            .catch((error) => {
+                console.error("An error occurred:", error);
+            });
+    }
+
+    function closeJoinModal(subredditId) {
+        // Close the modal
+        const modal = document.getElementById(`joinModal-${subredditId}`);
+        modal.style.display = "none";
+    }
+</script>
+
+
 </head>
 <body>
     
@@ -78,7 +113,7 @@
             </span>
         </a>
         <div class="user-box" sec:authorize="isAuthenticated()">
-           <a class="add" th:href="@{/profile/posts}"><span th:if="${user != null}" th:text="${user.username}"></span></a>
+           <a class="add" th:href="@{/profile}"><span th:if="${user != null}" th:text="${user.username}"></span></a>
            &nbsp;  
            <div th:if="${user != null && user.media != null}">
                 <div class="user-image" th:if="${user.media.contentType.startsWith('image/')}">
@@ -211,6 +246,27 @@
 
                     </form>
                 </div>
+
+                <div sec:authorize="isAuthenticated()">
+                    <div th:if="${post.subreddit.user.email != #authentication.principal.username}">
+                        <div th:unless="${user.getJoinedSubreddits().contains(post.subreddit)}">
+                            <form th:action="@{/join-community}" method="Post" id="join-form-${post.subreddit.subredditId}">
+                                <input type="hidden" name="userId" th:value="${user.userId}" />
+                                <input type="hidden" name="subredditId" th:value="${post.subreddit.subredditId}" />
+                                <button type="submit" id="joinButton" onclick="showJoinModal(event, ${post.subreddit.subredditId})">Join Community</button>
+                            </form>
+                            <div id="joinModal-${post.subreddit.subredditId}" class="modal" style="display: none;">
+                                <div class="modal-content">
+                                    <span class="close" onclick="closeJoinModal(${post.subreddit.subredditId})">&times;</span>
+                                    <p>You have joined <span th:text="${post.subreddit.name}"></span> the community!</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+
             </div>
         </div>
 

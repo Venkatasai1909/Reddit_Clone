@@ -1,9 +1,13 @@
 package com.javateam.model;
 
+import com.javateam.repository.UserRepository;
 import jakarta.persistence.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
+
 @Entity
 @Table(name="subreddits")
 public class Subreddit {
@@ -20,6 +24,16 @@ public class Subreddit {
     @OneToOne(cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
     @JoinColumn(name="media_id")
     private Media media;
+    @ManyToMany(mappedBy = "joinedSubreddits")
+    private Set<User> members;
+
+   public Set<User> getMembers() {
+        return members;
+    }
+
+    public void setMembers(Set<User> members) {
+        this.members = members;
+    }
 
     public Media getMedia() {
         return media;
@@ -68,4 +82,5 @@ public class Subreddit {
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
+
 }

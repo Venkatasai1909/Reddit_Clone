@@ -1,17 +1,17 @@
 package com.javateam.controller;
 
 import com.javateam.model.*;
-import com.javateam.repository.SubredditRepository;
 import com.javateam.service.MediaService;
 import com.javateam.service.PostService;
+import com.javateam.service.SubredditService;
 import com.javateam.service.UserService;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,26 +20,23 @@ import javax.sql.rowset.serial.SerialException;
 import java.io.IOException;
 import java.sql.Blob;
 import java.sql.SQLException;
-import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Controller
 public class HomeController {
     private PostService postService;
     private UserService userService;
     private MediaService mediaService;
-    private final SubredditRepository subredditRepository;
+    private SubredditService subredditService;
 
     @Autowired
     public HomeController(PostService postService, UserService userService, MediaService mediaService,
-                          SubredditRepository subredditRepository) {
+                          SubredditService subredditService) {
         this.postService = postService;
         this.userService = userService;
         this.mediaService = mediaService;
-        this.subredditRepository = subredditRepository;
+        this.subredditService = subredditService;
     }
 
     @GetMapping({"/","/posts"})
@@ -52,7 +49,7 @@ public class HomeController {
             model.addAttribute("user", user);
         }
 
-        List<Subreddit> subredditList = postService.findAllSubreddit();
+        List<Subreddit> subredditList = subredditService.findAllSubreddit();
         model.addAttribute("subredditList", subredditList);
         model.addAttribute("posts", posts);
 
@@ -73,7 +70,7 @@ public class HomeController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findByEmail(authentication.getName());
 
-        List<Subreddit> subreddits = postService.findAllSubreddit();
+        List<Subreddit> subreddits = subredditService.findAllSubreddit();
 
         model.addAttribute("post", post);
         model.addAttribute("user", user);
@@ -161,7 +158,7 @@ public class HomeController {
             model.addAttribute("user", user);
         }
 
-        List<Subreddit> subredditList = postService.findAllSubreddit();
+        List<Subreddit> subredditList = subredditService.findAllSubreddit();
         model.addAttribute("subredditList", subredditList);
         model.addAttribute("post", post);
 
@@ -171,7 +168,6 @@ public class HomeController {
     @GetMapping("/create-community")
     public String createCommunity(Model model) {
         Subreddit subreddit = new Subreddit();
-        subreddit.setName("r/");
 
         model.addAttribute("subreddit", subreddit);
 
@@ -181,7 +177,7 @@ public class HomeController {
     @PostMapping("/save-subreddit")
     public String saveSubreddit(@ModelAttribute("subreddit") Subreddit subreddit,
                                 @RequestParam(value="file", required = false) MultipartFile file) {
-        Subreddit existingSubreddit = postService.findBySubredditName(subreddit.getName());
+        Subreddit existingSubreddit = subredditService.findBySubredditName(subreddit.getName());
 
         if (existingSubreddit != null) {
             return "create-subreddit";
@@ -210,7 +206,7 @@ public class HomeController {
         User user = userService.findByEmail(authentication.getName());
         subreddit.setUser(user);
 
-        postService.save(subreddit);
+        subredditService.save(subreddit);
 
         return "redirect:/posts";
     }
@@ -345,13 +341,13 @@ public class HomeController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findByEmail(authentication.getName());
         List<Post> posts = postService.findAllPostBySubredditName("r/" + subredditName);
-        List<Subreddit> subredditList = postService.findAllSubreddit();
+        List<Subreddit> subredditList = subredditService.findAllSubreddit();
 
         if (user != null) {
             model.addAttribute("user", user);
         }
 
-        Subreddit subreddit = subredditRepository.findBySubredditName("r/" + subredditName);
+        Subreddit subreddit = subredditService.findBySubredditName("r/" + subredditName);
 
         if (subredditName == null || subredditName.isEmpty()) {
             System.out.println("Image not found");
@@ -369,7 +365,7 @@ public class HomeController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findByEmail(authentication.getName());
         List<Post> posts = postService.findAllPostBySubredditName(subredditName);
-        List<Subreddit> subredditList = postService.findAllSubreddit();
+        List<Subreddit> subredditList = subredditService.findAllSubreddit();
 
         if (user != null) {
             model.addAttribute("user", user);
@@ -389,7 +385,7 @@ public class HomeController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findByEmail(authentication.getName());
         List<Post> posts = postService.SearchByPostNameSubredditDescriptionURL(text);
-        List<Subreddit> subredditList = postService.findAllSubreddit();
+        List<Subreddit> subredditList = subredditService.findAllSubreddit();
 
         if (user != null) {
             model.addAttribute("user", user);
@@ -410,7 +406,7 @@ public class HomeController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findByEmail(authentication.getName());
         List<Post> posts = postService.findAllNewPost();
-        List<Subreddit> subredditList = postService.findAllSubreddit();
+        List<Subreddit> subredditList = subredditService.findAllSubreddit();
 
         if (user != null) {
             model.addAttribute("user", user);
@@ -428,7 +424,7 @@ public class HomeController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findByEmail(authentication.getName());
         List<Post> posts = postService.findAllTopPost();
-        List<Subreddit> subredditList = postService.findAllSubreddit();
+        List<Subreddit> subredditList = subredditService.findAllSubreddit();
 
         if (user != null) {
             model.addAttribute("user", user);
@@ -445,7 +441,7 @@ public class HomeController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findByEmail(authentication.getName());
         List<Post> posts = postService.findAllHotPost();
-        List<Subreddit> subredditList = postService.findAllSubreddit();
+        List<Subreddit> subredditList = subredditService.findAllSubreddit();
 
         if (user != null) {
             model.addAttribute("user", user);
@@ -457,12 +453,12 @@ public class HomeController {
         return "home-page";
     }
 
-    @GetMapping("/profile/posts")
+    @GetMapping("/profile")
     public String userProfile(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findByEmail(authentication.getName());
         List<Post> posts = postService.findALlPostsByUserIdByOrderByVoteCountDesc(user.getUserId()) ;
-        List<Subreddit> subredditList = postService.findAllSubreddit();
+        List<Subreddit> subredditList = subredditService.findAllSubreddit();
 
         if (user != null) {
             model.addAttribute("user", user);
@@ -480,8 +476,7 @@ public class HomeController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findByEmail(authentication.getName());
         List<Comment> commentList  = user.getComments();
-        //List<Comment> commentList = user != null ? user.getComments() : new ArrayList<>();
-        List<Subreddit> subredditList = postService.findAllSubreddit();
+        List<Subreddit> subredditList = subredditService.findAllSubreddit();
 
         model.addAttribute("subredditList", subredditList);
         model.addAttribute("posts", null);
@@ -496,7 +491,7 @@ public class HomeController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findByEmail(authentication.getName());
         List<Post> postList = userService.findAllDownvotePostGivenByUserId(user.getUserId());
-        List<Subreddit> subredditList = postService.findAllSubreddit();
+        List<Subreddit> subredditList = subredditService.findAllSubreddit();
 
         model.addAttribute("subredditList", subredditList);
         model.addAttribute("user", user);
@@ -511,7 +506,7 @@ public class HomeController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findByEmail(authentication.getName());
         List<Post> postList = userService.findAllUpvotePostGivenByUserId(user.getUserId());
-        List<Subreddit> subredditList = postService.findAllSubreddit();
+        List<Subreddit> subredditList = subredditService.findAllSubreddit();
 
         model.addAttribute("subredditList", subredditList);
         model.addAttribute("user", user);
@@ -586,6 +581,44 @@ public class HomeController {
         postService.save(post);
         
         return "redirect:/profile/upvote";
+    }
+    @Transactional
+    @PostMapping("/join-community")
+    public String joinCommunity(@RequestParam("userId")Integer userId, @RequestParam("subredditId")Integer subredditId) {
+        User user = userService.findByUserId(userId);
+        Subreddit subreddit = subredditService.findBySubredditId(subredditId);
+        System.out.println("In Method...1");
+
+        if (!user.getJoinedSubreddits().contains(subreddit)) {
+            System.out.println(user.getJoinedSubreddits().size());
+            System.out.println("In Method...2");
+            user.getJoinedSubreddits().add(subreddit);
+            System.out.println(user.getJoinedSubreddits().size());
+        }
+
+        if(!subreddit.getMembers().contains(user)) {
+            System.out.println("In Method...2");
+            subreddit.getMembers().add(user);
+        }
+
+        return "redirect:/posts";
+    }
+
+    @GetMapping("/community-posts")
+    public String getJoinedCommunities(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.findByEmail(authentication.getName());
+
+        List<Post> posts = userService.findAllPostsBySubreddit(user.getJoinedSubreddits());
+        List<Comment> commentList  = user.getComments();
+        List<Subreddit> subredditList = subredditService.findAllSubreddit();
+
+        model.addAttribute("subredditList", subredditList);
+        model.addAttribute("posts", posts);
+        model.addAttribute("commentList", commentList);
+        model.addAttribute("user", user);
+
+        return "profile-page";
     }
 
 }

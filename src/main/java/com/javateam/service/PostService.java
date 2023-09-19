@@ -35,13 +35,6 @@ public class PostService {
         return postRepository.findById(postId).get();
     }
 
-    public void save(Subreddit subreddit) {
-        subredditRepository.save(subreddit);
-    }
-
-    public List<Subreddit> findAllSubreddit() {
-        return subredditRepository.findAll();
-    }
 
     public void deleteById(Integer postId) {
         postRepository.deleteById(postId);
@@ -77,9 +70,7 @@ public class PostService {
         return postRepository.findAllByVoteCountDescAndRecentlyCreatedDesc();
     }
 
-    public Subreddit findBySubredditName(String subredditName) {
-        return subredditRepository.findByName(subredditName);
-    }
+
     public List<Post> findAllDraftPostsOfUser(Integer userId) {
         return postRepository.findAllDraftPostsOfUser(userId);
     }
