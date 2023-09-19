@@ -19,6 +19,15 @@
     <label for="name">Name:</label>
     <input type="text" id="name" name="name" th:field="*{name}" placeholder="r/" oninput="addPrefix(this);" required>
 
+    <label>
+      <input type="radio" name="access" th:field="*{access}" value="public">
+      Public
+    </label>
+    <label>
+      <input type="radio" name="access" th:field="*{access}" value="private">
+      Private
+    </label>
+
     <label for="file">Choose icon </label>
     <input type="file" id="file" th:name="file" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
     <br>

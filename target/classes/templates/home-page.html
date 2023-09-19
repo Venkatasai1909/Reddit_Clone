@@ -77,7 +77,6 @@
                     <a id="create-community-box" th:href="@{/create-community}"><span class="material-symbols-outlined">add</span> <p>Create Community</p></a>
 
                 <div class="select-box" th:each="subreddit: ${subredditList}">
-
                     <div class="option">
                         <img th:if="${ subreddit != null && subreddit.media != null}"   th:src="@{${'/display?id=' + subreddit.media.mediaId}}" alt="Image">
                         <a th:if="${subreddit.name != null}" th:href="@{'/subreddit/r/'+ ${#strings.substring(subreddit.name, 2)}}"
@@ -243,7 +242,6 @@
                             <span th:text="${post.comments.size()}"></span>
                             Comments
                         </button>
-
                     </form>
                 </div>
 
@@ -265,9 +263,16 @@
 
                     </div>
                 </div>
-
-
             </div>
+<!--            <div class="subredditList" th:each="subreddit: ${subredditList}">-->
+<!--                <p>-->
+<!--&lt;!&ndash;                <img th:if="${ subreddit != null && subreddit.media != null}"   th:src="@{${'/display?id=' + subreddit.media.mediaId}}" alt="Image">&ndash;&gt;-->
+<!--                    <a th:if="${subreddit.name != null}" th:href="@{'/subreddit/r/'+ ${#strings.substring(subreddit.name, 2)}}"-->
+<!--                       th:text="${subreddit.name}"><br><br>-->
+<!--                    </a>-->
+<!--                </p>-->
+<!--&lt;!&ndash;                <span class="material-symbols-outlined">star</span>&ndash;&gt;-->
+<!--            </div>-->
         </div>
 
         <div class="create">

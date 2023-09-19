@@ -5,9 +5,14 @@ import com.javateam.model.Subreddit;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
+
 public interface SubredditRepository extends JpaRepository<Subreddit, Integer> {
     Subreddit findByName(String name);
 
-    @Query("SELECT s FROM Subreddit s WHERE s.name = ?1")
-    Subreddit findBySubredditName(String name);
+//    @Query("SELECT s FROM Subreddit s WHERE s.name = ?1")
+//    Subreddit findBySubredditName(String name);
+
+    List<Subreddit> findAllByAccess(String access);
+
 }

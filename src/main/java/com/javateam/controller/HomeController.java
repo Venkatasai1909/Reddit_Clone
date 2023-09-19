@@ -1,10 +1,7 @@
 package com.javateam.controller;
 
 import com.javateam.model.*;
-import com.javateam.service.MediaService;
-import com.javateam.service.PostService;
-import com.javateam.service.SubredditService;
-import com.javateam.service.UserService;
+import com.javateam.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -29,13 +26,15 @@ public class HomeController {
     private UserService userService;
     private MediaService mediaService;
     private SubredditService subredditService;
+    private NotificationService notificationService;
 
     @Autowired
     public HomeController(PostService postService, UserService userService, MediaService mediaService,
-                          SubredditService subredditService) {
+                          SubredditService subredditService, NotificationService notificationService) {
         this.postService = postService;
         this.userService = userService;
         this.mediaService = mediaService;
+        this.notificationService = notificationService;
         this.subredditService = subredditService;
     }
 
@@ -83,11 +82,11 @@ public class HomeController {
     public String savePost(@ModelAttribute("post") Post post,
                            @RequestParam(value="file", required = false) MultipartFile file,
                            @RequestParam(value="action")String action) throws IOException, SerialException, SQLException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.findByEmail(authentication.getName());
         if(post.getPostId() == null) {
             post.setCreatedAt(LocalDateTime.now());
 
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            User user = userService.findByEmail(authentication.getName());
             post.setUser(user);
 
             if(file!=null && !file.isEmpty()) {
@@ -135,6 +134,13 @@ public class HomeController {
 
             postService.save(existingPost);
         }
+
+        if(user.getJoinedSubreddits()!=null) {
+            System.out.println(post.getSubreddit().getName());
+            notificationService.sendPostCreationNotifications(post.getSubreddit(), post);
+        }
+
+
         if(action.equals("Draft")) {
             return "redirect:/drafts";
         }
@@ -587,18 +593,9 @@ public class HomeController {
     public String joinCommunity(@RequestParam("userId")Integer userId, @RequestParam("subredditId")Integer subredditId) {
         User user = userService.findByUserId(userId);
         Subreddit subreddit = subredditService.findBySubredditId(subredditId);
-        System.out.println("In Method...1");
 
         if (!user.getJoinedSubreddits().contains(subreddit)) {
-            System.out.println(user.getJoinedSubreddits().size());
-            System.out.println("In Method...2");
             user.getJoinedSubreddits().add(subreddit);
-            System.out.println(user.getJoinedSubreddits().size());
-        }
-
-        if(!subreddit.getMembers().contains(user)) {
-            System.out.println("In Method...2");
-            subreddit.getMembers().add(user);
         }
 
         return "redirect:/posts";

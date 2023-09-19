@@ -21,19 +21,19 @@ public class Subreddit {
     @OneToMany(mappedBy = "subreddit", cascade = {CascadeType.REMOVE})
     private List<Post> posts;
     private LocalDateTime createdAt;
+    private String access;
     @OneToOne(cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
     @JoinColumn(name="media_id")
     private Media media;
-    @ManyToMany(mappedBy = "joinedSubreddits")
-    private Set<User> members;
 
-   public Set<User> getMembers() {
-        return members;
+    public String getAccess() {
+        return access;
     }
 
-    public void setMembers(Set<User> members) {
-        this.members = members;
+    public void setAccess(String access) {
+        this.access = access;
     }
+
 
     public Media getMedia() {
         return media;

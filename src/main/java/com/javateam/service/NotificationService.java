@@ -15,28 +15,26 @@ import java.util.Set;
 public class NotificationService {
 
     private NotificationRepository notificationRepository;
-    private EmailNotificationService emailNotificationService;
+    private EmailNotificationService emailNotificationServiceForUser;
+    private UserService userService;
 
 
     @Autowired
-    public NotificationService(NotificationRepository notificationRepository, EmailNotificationService emailNotificationService) {
+    public NotificationService(NotificationRepository notificationRepository,
+                               EmailNotificationService emailNotificationServiceForUser, UserService userService) {
         this.notificationRepository = notificationRepository;
-        this.emailNotificationService = emailNotificationService;
+        this.emailNotificationServiceForUser = emailNotificationServiceForUser;
+        this.userService = userService;
     }
 
     public void sendPostCreationNotifications(Subreddit subreddit, Post post) {
-        Set<User> joinedUsers = subreddit.getMembers();
-        int index = post.getDescription().indexOf(".");
-        String content;
+        Set<User> joinedUsers = userService.findUsersBySubredditId(subreddit.getSubredditId());
 
-        if(index != 0) {
-              content = post.getDescription().substring(0,index);
-        } else {
-            content = post.getDescription();
-        }
+        String title=post.getPostName();
 
         for (User user : joinedUsers) {
-            String message = "A new post has been created in the subreddit: " + subreddit.getName() + content;
+            System.out.println(subreddit.getName());
+            String message = "A new post has been created in the subreddit: " + title;
 
             Notification notification = new Notification();
             notification.setUser(user);
@@ -46,7 +44,8 @@ public class NotificationService {
 
             notificationRepository.save(notification);
 
-            emailNotificationService.sendEmailNotification(user, message);
+            emailNotificationServiceForUser.sendEmailNotification(user, notification);
+
         }
     }
 

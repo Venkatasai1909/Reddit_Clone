@@ -26,7 +26,7 @@ public class SubredditService {
     }
 
     public List<Subreddit> findAllSubreddit() {
-        return subredditRepository.findAll();
+        return subredditRepository.findAllByAccess("public");
     }
     public Subreddit findBySubredditName(String subredditName) {
         return subredditRepository.findByName(subredditName);

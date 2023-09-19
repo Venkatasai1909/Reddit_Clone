@@ -252,6 +252,7 @@ body {
   margin-top: 10px;
   padding: 15px;
   border-radius: 2px;
+  position:relative;
   outline: 1px solid white;
 }
 
@@ -435,3 +436,4 @@ align-items:center;
     padding: 10px;
     cursor: pointer;
 }
+

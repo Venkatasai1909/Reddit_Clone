@@ -14,11 +14,12 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     User findByEmail(String email);
     User findByUsername(String username);
 
-    @Query("SELECT u FROM User u WHERE u.username = :username AND u.password = :password")
-    User findByUsernameAndPassword(@Param("username") String username, @Param("password") String password);
 
     @Query("SELECT p FROM Post p WHERE p.subreddit IN :subreddits")
     List<Post> findPostsBySubreddits(@Param("subreddits") Set<Subreddit> subreddits);
+
+    @Query("SELECT u FROM User u JOIN u.joinedSubreddits s WHERE s.id = ?1")
+    Set<User> findUsersBySubredditId(Integer subredditId);
 
 
 }

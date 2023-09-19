@@ -1,5 +1,6 @@
 package com.javateam.service;
 
+import com.javateam.model.Notification;
 import com.javateam.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
@@ -17,10 +18,11 @@ public class EmailNotificationService {
         this.javaMailSender = javaMailSender;
     }
 
-    public void sendEmailNotification(User user, String message) {
+    public void sendEmailNotification(User user, Notification notification) {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(user.getEmail());
         mailMessage.setSubject("New Post Notification From Reddit");
+        String message = notification.getContent() +" "+notification.getSubreddit().getName()+" "+notification.getTimestamp();
         mailMessage.setText(message);
 
         try {

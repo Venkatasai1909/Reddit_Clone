@@ -61,15 +61,17 @@ public class UserService {
         return postList;
     }
 
-    public User findByUsernameAndPassword(String username, String password) {
-        User user = userRepository.findByUsernameAndPassword(username,password);
-        return user;
-    }
 
     public List<Post> findAllPostsBySubreddit(Set<Subreddit> subreddits) {
         List<Post> posts = userRepository.findPostsBySubreddits(subreddits);
 
         return posts;
     }
+
+   public  Set<User> findUsersBySubredditId(Integer subredditId) {
+        Set<User> users = userRepository.findUsersBySubredditId(subredditId);
+
+        return users;
+   }
 
 }
